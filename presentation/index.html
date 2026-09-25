@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RSA-SHIELD — RSA Key Security Auditor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <div class="deck" id="deck">
+
+    <!-- SLIDE 1 — COVER -->
+    <section class="slide cover active" data-slide="1">
+      <div class="cover-main">
+        <div>
+          <div class="brand-mark">
+            <div class="brand-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.8">
+                <path d="M12 3l7 4v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V7l7-4z"/>
+                <path d="M9 12l2 2 4-4" stroke="#a78bfa"/>
+              </svg>
+            </div>
+            <span class="eyebrow" style="margin:0">Security Audit Platform</span>
+          </div>
+          <h1 class="cover-title">RSA-SHIELD</h1>
+          <p class="cover-subtitle">RSA Key Security Auditor for Legacy Critical Infrastructure</p>
+          <div class="meta-grid">
+            <div class="meta-item">
+              <label>Team</label>
+              <span>[TEAM NAME]</span>
+            </div>
+            <div class="meta-item">
+              <label>Mentor</label>
+              <span>[MENTOR NAME]</span>
+            </div>
+            <div class="meta-item">
+              <label>Members</label>
+              <span>[MEMBER 1] · [MEMBER 2]<br/>[MEMBER 3] · [MEMBER 4]</span>
+            </div>
+            <div class="meta-item">
+              <label>Institution</label>
+              <span>[COLLEGE / UNIVERSITY]</span>
+            </div>
+          </div>
+        </div>
+        <div class="cover-visual" aria-hidden="true">
+          <div class="scan-ring"></div>
+          <div class="scan-ring"></div>
+          <div class="scan-ring"></div>
+          <div class="scan-line"></div>
+          <div class="modulus-block">
+            <div>RSA MODULUS UNDER INSPECTION</div>
+            <div class="n">n = p × q</div>
+            <div>structural · mathematical · evidence-led</div>
+          </div>
+          <div class="status-chip">AUDIT ENGINE · READY</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 2 — THE PROBLEM -->
+    <section class="slide" data-slide="2">
+      <header class="slide-header">
+        <p class="eyebrow">The Problem</p>
+        <h2 class="slide-title wide">RSA Keys Can Fail Before the Encryption Does</h2>
+        <p class="slide-sub">Legacy critical infrastructure may retain cryptographic assets whose strength was never mathematically re-verified.</p>
+      </header>
+      <div class="slide-body">
+        <div class="grow panel panel-glow mermaid-wrap">
+          <pre class="mermaid">
+flowchart LR
+  A[Legacy SCADA / Substation Assets] --> B[RSA Public Keys]
+  B --> C{Key Material Quality}
+  C -->|Poor entropy / weak generation| D[Weak Modulus]
+  C -->|Sound generation| E[Intact Cryptographic Strength]
+  D --> F[Factorization Exposure]
+  F --> G[Security Breach Surface]
+  style A fill:#11151d,stroke:#22d3ee,color:#e8eef7
+  style B fill:#11151d,stroke:#94a3b8,color:#e8eef7
+  style C fill:#11151d,stroke:#a78bfa,color:#e8eef7
+  style D fill:#1a1210,stroke:#f59e0b,color:#f59e0b
+  style E fill:#0f1a14,stroke:#34d399,color:#34d399
+  style F fill:#1a1010,stroke:#f87171,color:#f87171
+  style G fill:#1a1010,stroke:#f87171,color:#f87171
+          </pre>
+        </div>
+        <aside class="side-notes" style="max-width:260px">
+          <div class="side-note">
+            <strong>Dependency</strong>
+            RSA security hinges on the structure and secrecy of prime factors behind the modulus.
+          </div>
+          <div class="side-note">
+            <strong>Scale problem</strong>
+            Manual review of large key inventories cannot establish mathematical strength.
+          </div>
+          <div class="side-note">
+            <strong>Exposure path</strong>
+            Weakly generated moduli enable factorization-based compromise.
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- SLIDE 3 — EXISTING GAP -->
+    <section class="slide" data-slide="3">
+      <header class="slide-header">
+        <p class="eyebrow">Existing Gap</p>
+        <h2 class="slide-title wide">From Key Inventory to Mathematical Assurance</h2>
+      </header>
+      <div class="cmp">
+        <div class="panel">
+          <p class="cmp-label bad">Traditional Key Inventory</p>
+          <ul class="flow-steps flow-fail">
+            <li><span class="step-num">01</span> Key Inventory</li>
+            <li><span class="step-num">02</span> Basic Length Check</li>
+            <li><span class="step-num">03</span> Basic Configuration Check</li>
+            <li><span class="step-num">✕</span> Does not establish mathematical strength</li>
+          </ul>
+        </div>
+        <div class="cmp-vs">VS</div>
+        <div class="panel panel-glow">
+          <p class="cmp-label good">RSA-SHIELD</p>
+          <ul class="flow-steps flow-pass">
+            <li><span class="step-num">01</span> Structural Analysis</li>
+            <li><span class="step-num">02</span> Mathematical Analysis</li>
+            <li><span class="step-num">03</span> ECM Factorization Attempt</li>
+            <li><span class="step-num">04</span> Evidence-Based Security Assessment</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4 — SOLUTION -->
+    <section class="slide" data-slide="4">
+      <header class="slide-header">
+        <p class="eyebrow">Our Solution</p>
+        <h2 class="slide-title wide">RSA-SHIELD: A Mathematical RSA Security Auditor</h2>
+        <p class="slide-sub">A software platform that operationalizes established cryptographic mathematics into practical key auditing.</p>
+      </header>
+      <div class="slide-body col">
+        <div class="panel panel-glow mermaid-wrap mermaid-compact">
+          <pre class="mermaid">
+flowchart LR
+  A[RSA Key Input] --> B[Parsing]
+  B --> C[Modulus Extraction]
+  C --> D[Cryptographic Analysis]
+  D --> E[ECM Analysis]
+  E --> F[Factorization Evidence]
+  F --> G[Risk Classification]
+  G --> H[Security Report]
+  style A fill:#11151d,stroke:#94a3b8,color:#e8eef7
+  style B fill:#11151d,stroke:#22d3ee,color:#e8eef7
+  style C fill:#11151d,stroke:#22d3ee,color:#e8eef7
+  style D fill:#11151d,stroke:#a78bfa,color:#e8eef7
+  style E fill:#11151d,stroke:#a78bfa,color:#e8eef7
+  style F fill:#11151d,stroke:#f59e0b,color:#e8eef7
+  style G fill:#11151d,stroke:#22d3ee,color:#e8eef7
+  style H fill:#0f1a14,stroke:#34d399,color:#34d399
+          </pre>
+        </div>
+        <div class="legend">
+          <span class="factor">Factor Found</span>
+          <span class="suspicious">Suspicious</span>
+          <span class="inconclusive">Inconclusive</span>
+          <span class="clear">No weakness detected by configured checks</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5 — HOW IT WORKS -->
+    <section class="slide" data-slide="5">
+      <header class="slide-header">
+        <p class="eyebrow">Audit Engine</p>
+        <h2 class="slide-title">Inside the Audit Engine</h2>
+      </header>
+      <div class="slide-body" style="gap:1rem">
+        <div style="flex:1.15;min-width:0;display:flex;flex-direction:column;gap:0.75rem">
+          <div class="eq-box">
+            <span>n = p × q</span>
+            <span class="eq-note">Recovering non-trivial factors p or q compromises the RSA modulus.</span>
+          </div>
+          <div class="panel panel-glow mermaid-wrap mermaid-compact" style="flex:1">
+            <pre class="mermaid">
+flowchart LR
+  A[Ingest Key] --> B[Validate]
+  B --> C[Extract n, e]
+  C --> D[Preliminary Checks]
+  D --> E[ECM Attempts]
+  E --> F[Factor / Evidence]
+  F --> G[Exposure Estimate]
+  G --> H[Audit Result]
+  style A fill:#11151d,stroke:#94a3b8,color:#e8eef7
+  style B fill:#11151d,stroke:#22d3ee,color:#e8eef7
+  style C fill:#11151d,stroke:#22d3ee,color:#e8eef7
+  style D fill:#11151d,stroke:#a78bfa,color:#e8eef7
+  style E fill:#11151d,stroke:#a78bfa,color:#e8eef7
+  style F fill:#1a1210,stroke:#f59e0b,color:#f59e0b
+  style G fill:#11151d,stroke:#22d3ee,color:#e8eef7
+  style H fill:#0f1a14,stroke:#34d399,color:#34d399
+            </pre>
+          </div>
+        </div>
+        <div class="engine-grid" style="flex:0.85;grid-template-columns:1fr;align-content:center">
+          <div class="engine-step"><span class="num">01–02</span><p>Accept &amp; validate RSA public key / modulus</p></div>
+          <div class="engine-step"><span class="num">03–04</span><p>Extract n, e · preliminary checks</p></div>
+          <div class="engine-step"><span class="num">05–06</span><p>Configurable ECM · detect factors</p></div>
+          <div class="engine-step"><span class="num">07–08</span><p>Estimate exposure · emit audit result</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 6 — LENSTRA ECM -->
+    <section class="slide" data-slide="6">
+      <header class="slide-header">
+        <p class="eyebrow">Cryptographic Foundation</p>
+        <h2 class="slide-title">Why Elliptic Curve Method?</h2>
+        <p class="slide-sub">Lenstra ECM is an established factorization algorithm — useful for finding relatively small factors of large composites. We apply it as an audit instrument, not as a claimed break of modern RSA.</p>
+      </header>
+      <div class="split-diagram">
+        <div class="panel panel-glow mermaid-wrap mermaid-compact">
+          <pre class="mermaid">
+flowchart TD
+  N[RSA modulus n] --> S[ECM search]
+  S --> E[Elliptic curve operations]
+  E --> Q{Non-trivial factor?}
+  Q -->|YES| Y[Factor found — concrete weakness evidence]
+  Q -->|NO| X[Continue / Report inconclusive]
+  style N fill:#11151d,stroke:#22d3ee,color:#e8eef7
+  style S fill:#11151d,stroke:#a78bfa,color:#e8eef7
+  style E fill:#11151d,stroke:#a78bfa,color:#e8eef7
+  style Q fill:#11151d,stroke:#94a3b8,color:#e8eef7
+  style Y fill:#1a1010,stroke:#f87171,color:#f87171
+  style X fill:#11151d,stroke:#f59e0b,color:#f59e0b
+          </pre>
+        </div>
+        <div class="side-notes">
+          <div class="side-note">
+            <strong>What ECM is</strong>
+            A factorization method particularly effective when a composite has a relatively small prime factor.
+          </div>
+          <div class="side-note">
+            <strong>Why it matters for audit</strong>
+            Discovering a non-trivial factor of n is concrete evidence the modulus is mathematically weak.
+          </div>
+          <div class="side-note">
+            <strong>What we do not claim</strong>
+            ECM does not instantly factor properly generated modern RSA keys.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7 — ARCHITECTURE -->
+    <section class="slide" data-slide="7">
+      <header class="slide-header">
+        <p class="eyebrow">System Design</p>
+        <h2 class="slide-title">RSA-SHIELD Architecture</h2>
+      </header>
+      <div class="slide-body col">
+        <div class="panel panel-glow mermaid-wrap mermaid-compact">
+          <pre class="mermaid">
+flowchart TB
+  U[User] --> FE[React Dashboard]
+  FE --> API[FastAPI API]
+  API --> ORCH[Audit Orchestrator]
+  ORCH --> P[RSA Parser]
+  ORCH --> KA[Key Analyzer]
+  ORCH --> ECM[ECM Engine]
+  ORCH --> RE[Risk Engine]
+  ORCH --> RG[Report Generator]
+  ORCH --> DB[(PostgreSQL / SQLite)]
+  RG --> RPT[JSON + PDF Reports]
+  style U fill:#11151d,stroke:#94a3b8,color:#e8eef7
+  style FE fill:#11151d,stroke:#22d3ee,color:#e8eef7
+  style API fill:#11151d,stroke:#22d3ee,color:#e8eef7
+  style ORCH fill:#11151d,stroke:#a78bfa,color:#e8eef7
+  style P fill:#0d1118,stroke:#64748b,color:#e8eef7
+  style KA fill:#0d1118,stroke:#64748b,color:#e8eef7
+  style ECM fill:#0d1118,stroke:#a78bfa,color:#e8eef7
+  style RE fill:#0d1118,stroke:#f59e0b,color:#e8eef7
+  style RG fill:#0d1118,stroke:#34d399,color:#e8eef7
+  style DB fill:#0d1118,stroke:#22d3ee,color:#e8eef7
+  style RPT fill:#0f1a14,stroke:#34d399,color:#34d399
+          </pre>
+        </div>
+        <div class="pipeline" style="justify-content:flex-start;margin-top:0.25rem">
+          <span class="pipe-node">React + TS + Tailwind</span>
+          <span class="pipe-arrow">·</span>
+          <span class="pipe-node">FastAPI + Python</span>
+          <span class="pipe-arrow">·</span>
+          <span class="pipe-node accent">Crypto + ECM Engines</span>
+          <span class="pipe-arrow">·</span>
+          <span class="pipe-node">PostgreSQL / SQLite</span>
+          <span class="pipe-arrow">·</span>
+          <span class="pipe-node">JSON + PDF Reporting</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8 — SECURITY ANALYSIS ENGINE -->
+    <section class="slide" data-slide="8">
+      <header class="slide-header">
+        <p class="eyebrow">Analysis Layers</p>
+        <h2 class="slide-title wide">More Than a Factorization Tool</h2>
+      </header>
+      <div class="slide-body col">
+        <div class="layers">
+          <div class="layer"><span class="layer-tag">LAYER 1</span><span class="layer-title">Format &amp; Parameter Validation</span></div>
+          <div class="layer"><span class="layer-tag">LAYER 2</span><span class="layer-title">RSA Parameter Analysis</span></div>
+          <div class="layer"><span class="layer-tag">LAYER 3</span><span class="layer-title">Modulus Characteristics</span></div>
+          <div class="layer"><span class="layer-tag">LAYER 4</span><span class="layer-title">ECM Factorization Attempt</span></div>
+          <div class="layer"><span class="layer-tag">LAYER 5</span><span class="layer-title">Evidence-Based Risk Classification</span></div>
+          <div class="layer"><span class="layer-tag">LAYER 6</span><span class="layer-title">Audit Report Generation</span></div>
+        </div>
+        <div class="insight-banner">
+          The platform separates <span class="accent-cyan">mathematical evidence</span> from <span class="accent-violet">heuristic warnings</span> — so evaluators can see what was proven vs. what was flagged.
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9 — AUDIT SIMULATION -->
+    <section class="slide" data-slide="9">
+      <header class="slide-header">
+        <p class="eyebrow">Audit Scenario</p>
+        <h2 class="slide-title wide">From Suspicious Key to Security Evidence</h2>
+      </header>
+      <div class="slide-body" style="gap:1rem">
+        <div class="panel mermaid-wrap mermaid-compact" style="flex:0.95;min-width:0">
+          <pre class="mermaid">
+flowchart TD
+  A[Legacy Device] --> B[RSA Public Key Retrieved]
+  B --> C[RSA-SHIELD Audit]
+  C --> D[Suspicious Modulus]
+  D --> E[ECM Attempt]
+  E --> F[Factor Found]
+  F --> G[Security Alert]
+  G --> H[Recommended Key Rotation]
+  style A fill:#11151d,stroke:#94a3b8,color:#e8eef7
+  style B fill:#11151d,stroke:#22d3ee,color:#e8eef7
+  style C fill:#11151d,stroke:#a78bfa,color:#e8eef7
+  style D fill:#1a1210,stroke:#f59e0b,color:#f59e0b
+  style E fill:#11151d,stroke:#a78bfa,color:#e8eef7
+  style F fill:#1a1010,stroke:#f87171,color:#f87171
+  style G fill:#1a1010,stroke:#f87171,color:#f87171
+  style H fill:#0f1a14,stroke:#34d399,color:#34d399
+          </pre>
+        </div>
+        <div class="dash" style="flex:1.05">
+          <div class="dash-bar">
+            <div class="dots"><span></span><span></span><span></span></div>
+            <div class="dash-title">RSA-SHIELD · Audit Result Viewer</div>
+            <div class="severity-badge">CRITICAL</div>
+          </div>
+          <div class="dash-body">
+            <div class="kv">
+              <div class="kv-item"><label>Key ID</label><span>LEGACY-SCADA-0042</span></div>
+              <div class="kv-item"><label>Modulus size</label><span>1024-bit</span></div>
+              <div class="kv-item"><label>Public exponent</label><span>e = 65537</span></div>
+              <div class="kv-item"><label>ECM status</label><span class="accent-red">Factor discovered</span></div>
+              <div class="kv-item"><label>Factor evidence</label><span>Non-trivial factor of n</span></div>
+              <div class="kv-item"><label>Audit timestamp</label><span>2026-03-14 09:41 UTC</span></div>
+            </div>
+            <div class="alert-panel">
+              <h4>Security Alert</h4>
+              <p>Mathematical evidence of modulus weakness. Immediate key rotation recommended for authorized infrastructure owners.</p>
+              <p class="mono" style="font-size:0.7rem;color:var(--amber)">Classification: Factor Found — not heuristic</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10 — TECH STACK -->
+    <section class="slide" data-slide="10">
+      <header class="slide-header">
+        <p class="eyebrow">Implementation</p>
+        <h2 class="slide-title">Technology Stack</h2>
+      </header>
+      <div class="slide-body col" style="gap:0.65rem;justify-content:center">
+        <div class="stack-row">
+          <div class="stack-label">UI Layer</div>
+          <div class="stack-tags">
+            <span class="tag cyan">React</span>
+            <span class="tag cyan">TypeScript</span>
+            <span class="tag cyan">Tailwind CSS</span>
+            <span class="tag">Vite</span>
+            <span class="tag">React Flow / Recharts</span>
+          </div>
+        </div>
+        <div class="stack-row">
+          <div class="stack-label">API Layer</div>
+          <div class="stack-tags">
+            <span class="tag cyan">Python</span>
+            <span class="tag cyan">FastAPI</span>
+            <span class="tag">Pydantic</span>
+          </div>
+        </div>
+        <div class="stack-row">
+          <div class="stack-label">Security Engine</div>
+          <div class="stack-tags">
+            <span class="tag violet">RSA mathematics</span>
+            <span class="tag violet">Modular arithmetic</span>
+            <span class="tag violet">Lenstra ECM</span>
+            <span class="tag">Cryptographic hashing</span>
+          </div>
+        </div>
+        <div class="stack-row">
+          <div class="stack-label">Data</div>
+          <div class="stack-tags">
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">SQLite</span>
+          </div>
+        </div>
+        <div class="stack-row">
+          <div class="stack-label">DevOps</div>
+          <div class="stack-tags">
+            <span class="tag">Docker</span>
+            <span class="tag">Git</span>
+            <span class="tag">GitHub</span>
+          </div>
+        </div>
+        <div class="stack-row">
+          <div class="stack-label">Testing</div>
+          <div class="stack-tags">
+            <span class="tag">Pytest</span>
+            <span class="tag">Unit tests</span>
+            <span class="tag">Integration tests</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 11 — FEATURES -->
+    <section class="slide" data-slide="11">
+      <header class="slide-header">
+        <p class="eyebrow">Product Capabilities</p>
+        <h2 class="slide-title wide">Designed as a Real Security Product</h2>
+      </header>
+      <div class="grid-6">
+        <div class="feature-card"><div class="icon">01</div><h4>RSA key upload</h4><p>Ingest public keys and moduli for audit.</p></div>
+        <div class="feature-card"><div class="icon">02</div><h4>Batch auditing</h4><p>Process key inventories at scale.</p></div>
+        <div class="feature-card"><div class="icon">03</div><h4>Modulus analysis</h4><p>Structural and parameter inspection.</p></div>
+        <div class="feature-card"><div class="icon">04</div><h4>ECM attempts</h4><p>Configurable factorization probes.</p></div>
+        <div class="feature-card"><div class="icon">05</div><h4>Audit history</h4><p>Track findings over time.</p></div>
+        <div class="feature-card"><div class="icon">06</div><h4>Risk classification</h4><p>Evidence-tiered severity labels.</p></div>
+        <div class="feature-card"><div class="icon">07</div><h4>Evidence tracking</h4><p>Preserve factorization artifacts.</p></div>
+        <div class="feature-card"><div class="icon">08</div><h4>Exportable reports</h4><p>JSON and PDF security assessments.</p></div>
+        <div class="feature-card"><div class="icon">09</div><h4>API access</h4><p>Integrate into existing workflows.</p></div>
+        <div class="feature-card"><div class="icon">10</div><h4>Audit simulation</h4><p>Scenario-driven demonstration mode.</p></div>
+        <div class="feature-card"><div class="icon">11</div><h4>Visualizations</h4><p>Interactive crypto pipeline views.</p></div>
+        <div class="feature-card"><div class="icon">12</div><h4>Responsible framing</h4><p>Clear inconclusive vs. proven states.</p></div>
+      </div>
+    </section>
+
+    <!-- SLIDE 12 — EVALUATION -->
+    <section class="slide" data-slide="12">
+      <header class="slide-header">
+        <p class="eyebrow">Evaluation Framework</p>
+        <h2 class="slide-title">How We Measure the System</h2>
+        <p class="slide-sub">Metrics define success criteria. Prototype measurements will be reported when collected — not invented.</p>
+      </header>
+      <div class="grid-2">
+        <div class="panel" style="display:flex;flex-direction:column;gap:0.55rem">
+          <div class="metric-card"><div class="label">Keys successfully parsed</div><div class="value">Metric category — to be measured</div></div>
+          <div class="metric-card"><div class="label">Audit processing time</div><div class="value">Metric category — to be measured</div></div>
+          <div class="metric-card"><div class="label">ECM execution time</div><div class="value">Metric category — to be measured</div></div>
+          <div class="metric-card"><div class="label">Successful factor discovery on weak test keys</div><div class="value">Metric category — to be measured</div></div>
+          <div class="metric-card"><div class="label">False-positive rate for heuristic warnings</div><div class="value">Metric category — to be measured</div></div>
+          <div class="metric-card"><div class="label">Batch throughput · Resource utilization</div><div class="value">Metric category — to be measured</div></div>
+        </div>
+        <div class="panel panel-glow" style="display:flex;flex-direction:column">
+          <p class="cmp-label good" style="margin-bottom:0.5rem">Benchmark Categories</p>
+          <div class="chart-bars">
+            <div class="chart-col"><div class="bar ghost" style="height:55%"></div><span>Parse success</span></div>
+            <div class="chart-col"><div class="bar ghost" style="height:70%"></div><span>Audit latency</span></div>
+            <div class="chart-col"><div class="bar ghost" style="height:85%"></div><span>ECM runtime</span></div>
+            <div class="chart-col"><div class="bar ghost" style="height:45%"></div><span>Weak-key detect</span></div>
+            <div class="chart-col"><div class="bar ghost" style="height:60%"></div><span>Heuristic FP</span></div>
+            <div class="chart-col"><div class="bar ghost" style="height:75%"></div><span>Batch / resources</span></div>
+          </div>
+          <div class="bench-note">Prototype Benchmark — To Be Measured</div>
+          <p style="margin-top:0.85rem;font-size:0.78rem;color:var(--text-dim);line-height:1.45">
+            Detection rate evaluated only on intentionally weak test keys under authorized lab conditions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 13 — LIMITATIONS -->
+    <section class="slide" data-slide="13">
+      <header class="slide-header">
+        <p class="eyebrow">Responsible Cryptography</p>
+        <h2 class="slide-title wide">What RSA-SHIELD Does — and Does Not — Claim</h2>
+      </header>
+      <div class="limit-grid">
+        <div class="limit-card does">
+          <h4>What it does</h4>
+          <ul>
+            <li>Audits authorized RSA public keys and moduli</li>
+            <li>Applies structural and mathematical analysis</li>
+            <li>Uses Lenstra ECM as an evidence-gathering probe</li>
+            <li>Classifies findings with explicit evidence tiers</li>
+            <li>Produces human-readable security assessments</li>
+          </ul>
+        </div>
+        <div class="limit-card does-not">
+          <h4>What it does not claim</h4>
+          <ul>
+            <li>ECM is not a magic attack on modern strong RSA</li>
+            <li>Failure to factor ≠ mathematical proof of security</li>
+            <li>Not a formal cryptographic security proof</li>
+            <li>Production use needs specialist validation</li>
+            <li>Only authorized keys / infrastructure may be audited</li>
+          </ul>
+        </div>
+      </div>
+      <div class="insight-banner" style="margin-top:1rem">
+        Credibility comes from precision: we operationalize established math into an auditing aid — we do not invent RSA, ECM, or a new cryptosystem.
+      </div>
+    </section>
+
+    <!-- SLIDE 14 — FUTURE SCOPE -->
+    <section class="slide" data-slide="14">
+      <header class="slide-header">
+        <p class="eyebrow">Roadmap</p>
+        <h2 class="slide-title wide">From RSA Auditor to Cryptographic Asset Intelligence</h2>
+      </header>
+      <div class="slide-body col">
+        <div class="future-grid">
+          <div class="future-item"><span class="dot"></span>Large-scale key inventory</div>
+          <div class="future-item"><span class="dot"></span>Automated certificate scanning</div>
+          <div class="future-item"><span class="dot"></span>Weak-key pattern detection</div>
+          <div class="future-item"><span class="dot"></span>Historical key monitoring</div>
+          <div class="future-item"><span class="dot"></span>Hardware-backed key metadata</div>
+          <div class="future-item"><span class="dot"></span>Post-quantum migration readiness</div>
+          <div class="future-item"><span class="dot"></span>Enterprise dashboards</div>
+          <div class="future-item"><span class="dot"></span>CI/CD crypto asset scanning</div>
+          <div class="future-item"><span class="dot"></span>Automated compliance reports</div>
+        </div>
+        <div class="closing">
+          <div class="tagline">Know Your Keys. Prove Their Strength.</div>
+          <div class="credits">
+            <strong>[TEAM NAME]</strong> · [MEMBER 1] · [MEMBER 2] · [MEMBER 3] · [MEMBER 4]<br/>
+            [COLLEGE / UNIVERSITY] · Mentor: [MENTOR NAME]<br/>
+            <span class="mono" style="color:var(--cyan)">GitHub: github.com/[org]/rsa-shield</span>
+            &nbsp;·&nbsp;
+            <span class="mono" style="color:var(--violet)">Demo: [DEMO URL]</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="chrome">
+    <div class="progress-track"><div class="progress-fill" id="progress"></div></div>
+    <div class="nav-left">
+      <span class="brand-footer">RSA-SHIELD</span>
+      <span class="slide-counter" id="counter">01 / 14</span>
+    </div>
+    <span class="hint">← → · Space · click arrows</span>
+    <div class="nav-btns">
+      <button class="nav-btn" id="prev" aria-label="Previous slide">‹</button>
+      <button class="nav-btn" id="next" aria-label="Next slide">›</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
