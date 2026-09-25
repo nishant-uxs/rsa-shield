@@ -5,7 +5,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.audit.orchestrator import run_audit_pipeline
@@ -94,11 +94,14 @@ async def list_keys(
     stmt = select(RsaKey)
     count_stmt = select(func.count()).select_from(RsaKey)
     if q:
-        like = f"%{q}%"
-        stmt = stmt.where((RsaKey.label.ilike(like)) | (RsaKey.key_id.ilike(like)) | (RsaKey.fingerprint.ilike(like)))
-        count_stmt = select(func.count()).select_from(RsaKey).where(
-            (RsaKey.label.ilike(like)) | (RsaKey.key_id.ilike(like)) | (RsaKey.fingerprint.ilike(like))
+        like = f"%{q.lower()}%"
+        filt = or_(
+            func.lower(RsaKey.label).like(like),
+            func.lower(RsaKey.key_id).like(like),
+            func.lower(RsaKey.fingerprint).like(like),
         )
+        stmt = stmt.where(filt)
+        count_stmt = select(func.count()).select_from(RsaKey).where(filt)
     total = (await db.execute(count_stmt)).scalar_one()
     rows = (await db.execute(stmt.order_by(RsaKey.created_at.desc()).offset(skip).limit(limit))).scalars().all()
     return list(rows), int(total)
