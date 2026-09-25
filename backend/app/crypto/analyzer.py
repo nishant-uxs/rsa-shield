@@ -118,7 +118,7 @@ def analyze_rsa(n: int, e: int) -> AnalysisResult:
         result.suspicious = True
 
     # Trial division for tiny factors (deterministic discovery of trivial weakness)
-    tiny_primes = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+    tiny_primes = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107]
     for p in tiny_primes:
         if n % p == 0 and 1 < p < n:
             result.suspicious = True

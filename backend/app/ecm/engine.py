@@ -174,7 +174,7 @@ def ecm_factor(
             False, None, None, 0, (time.perf_counter() - start) * 1000, False, "n appears prime; ECM not applicable"
         )
 
-    for p in _primes_upto(50_000):
+    for p in _primes_upto(1_000_000):
         if time.perf_counter() > deadline:
             break
         if n % p == 0 and 1 < p < n:

@@ -8,9 +8,8 @@ from Crypto.PublicKey import RSA
 N_TINY = 101 * 1031  # 104131
 E = 65537
 
-# Weak ECM demo: ~30-bit prime × ~35-bit prime (above tiny trial cutoff in analyzer, within ECM/trial-50k engine)
-# 1000000007 is prime; 32416190071 is prime.
-P_WEAK = 1000000007
+# Weak ECM/demo factor: prime ~6 digits — found by engine trial (≤1e6) / ECM; above analyzer tiny list.
+P_WEAK = 100003
 Q_WEAK = 32416190071
 N_WEAK = P_WEAK * Q_WEAK
 
