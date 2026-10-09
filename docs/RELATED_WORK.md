@@ -1,0 +1,28 @@
+# Related work & positioning (RSA-SHIELD)
+
+RSA-SHIELD is an **evidence-tiered educational public-key auditing platform**.
+It does **not** claim a new factorization algorithm or an Internet-scale measurement study.
+
+## Prior work
+
+| Work | Focus | Relation to RSA-SHIELD |
+|------|--------|-------------------------|
+| Mining Your Ps and Qs (USENIX Security 2012) | Batch GCD over Internet key corpora | We offer inventory-scale pairwise GCD only |
+| ROCA / crocs-muni/roca (CCS 2017) | Infineon fingerprint + Coppersmith | Educational fingerprint heuristic; re-verify with authoritative tools |
+| badkeys (Böck) | Production known-vuln checker | Broader coverage; we emphasize tiers + pedagogy + ECM budget |
+| RsaCtfTool | Multi-attack CTF toolbox | Attack CLI vs audit UI with never-SECURE labels |
+| Fermat in the wild / RSAScan | Close primes / mass scanning | We include a budgeted Fermat probe in-pipeline |
+
+## Our contributions (honest)
+
+1. End-to-end pipeline: parse → analyze → Fermat → Wiener → ROCA fingerprint → budgeted ECM  
+2. Evidence taxonomy forbidding absolute **SECURE** labels  
+3. Controlled Test Lab fixtures + `/api/v1/evaluation/suite`  
+4. Inventory batch-GCD for shared-factor collisions among stored public keys  
+5. Full-stack artifact (React + FastAPI) for demos and coursework  
+
+## What we do **not** claim
+
+- Breaking modern strong RSA  
+- Formal security proofs from inconclusive ECM  
+- Parity with production detectors (badkeys / crocs ROCA) on all CVEs  
