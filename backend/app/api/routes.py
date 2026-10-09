@@ -174,6 +174,38 @@ async def evaluation_suite(ecm_timeout_ms: int = Query(3000, ge=500, le=30_000))
     return run_evaluation_suite(ecm_timeout_ms=ecm_timeout_ms)
 
 
+@router.get("/evaluation/ablation")
+async def evaluation_ablation(ecm_timeout_ms: int = Query(3000, ge=500, le=30_000)):
+    from app.services.research_eval import run_ablation
+
+    return run_ablation(ecm_timeout_ms=ecm_timeout_ms)
+
+
+@router.get("/evaluation/comparison")
+async def evaluation_comparison(ecm_timeout_ms: int = Query(3000, ge=500, le=30_000)):
+    from app.services.research_eval import run_configuration_comparison
+
+    return run_configuration_comparison(ecm_timeout_ms=ecm_timeout_ms)
+
+
+@router.get("/evaluation/corpus")
+async def evaluation_corpus(size: int = Query(40, ge=12, le=120)):
+    from app.services.research_eval import run_mini_corpus_study
+
+    return run_mini_corpus_study(size=size)
+
+
+@router.get("/evaluation/research-bundle")
+async def evaluation_research_bundle(
+    ecm_timeout_ms: int = Query(3000, ge=500, le=30_000),
+    corpus_size: int = Query(40, ge=12, le=120),
+):
+    """One-shot JSON for paper tables: fixtures + ablation + comparison + mini corpus."""
+    from app.services.research_eval import run_full_research_bundle
+
+    return run_full_research_bundle(ecm_timeout_ms=ecm_timeout_ms, corpus_size=corpus_size)
+
+
 @router.get("/research/related-work")
 async def related_work():
     """Positioning vs prior tools — honest gap statement for academic framing."""
@@ -215,5 +247,6 @@ async def related_work():
             "Evidence taxonomy that forbids absolute SECURE labels",
             "Controlled Test Lab fixtures + reproducible evaluation suite endpoint",
             "Inventory batch-GCD for shared-factor collisions among stored public keys",
+            "Research bundle: ablation, configuration precision/recall, mini synthetic corpus study",
         ],
     }
