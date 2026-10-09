@@ -38,3 +38,4 @@ presentation/*.toc
 presentation/*.snm
 presentation/compile*.txt
 presentation/test-tikz*
+.vercel

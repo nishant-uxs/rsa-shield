@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     app_name: str = "RSA-SHIELD"
     api_prefix: str = "/api/v1"
     database_url: str = "sqlite+aiosqlite:///./rsa_shield.db"
-    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
+    cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173,*"
     max_upload_bytes: int = 64 * 1024
     default_ecm_timeout_ms: int = 8000
     default_ecm_curves: int = 40
@@ -18,7 +18,8 @@ class Settings(BaseSettings):
 
     @property
     def cors_origin_list(self) -> list[str]:
-        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+        origins = [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+        return ["*"] if "*" in origins else origins
 
 
 @lru_cache
