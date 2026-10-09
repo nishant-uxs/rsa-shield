@@ -3,6 +3,9 @@
 from __future__ import annotations
 
 from Crypto.PublicKey import RSA
+from Crypto.Util.number import getPrime, isPrime
+
+from app.crypto.wiener import generate_wiener_weak_key
 
 # Tiny factors — deterministic trial division finds these immediately.
 N_TINY = 101 * 1031  # 104131
@@ -23,8 +26,21 @@ def _pem_from_ne(n: int, e: int = E) -> str:
     return RSA.construct((n, e)).export_key("PEM").decode()
 
 
+def _fermat_close_modulus(bits: int = 128) -> tuple[int, int, int]:
+    """Two close primes so Fermat succeeds quickly."""
+    half = bits // 2
+    p = getPrime(half)
+    q = p + 2
+    while not isPrime(q):
+        q += 2
+    return p * q, p, q
+
+
 def build_fixtures() -> list[dict]:
     legacy_pem = RSA.generate(1024).publickey().export_key("PEM").decode()
+    n_fermat, _, _ = _fermat_close_modulus(128)
+    n_w, e_w, _, _, _ = generate_wiener_weak_key(256)
+
     return [
         {
             "id": "weak-ecm",
@@ -45,6 +61,26 @@ def build_fixtures() -> list[dict]:
             "n": str(N_TINY),
             "e": E,
             "expected_hint": "FACTOR_FOUND",
+        },
+        {
+            "id": "fermat-close",
+            "name": "Fermat near-twin primes demo",
+            "description": "Modulus with intentionally close primes (|p−q| tiny) so Fermat factorization recovers factors.",
+            "category": "weak",
+            "pem": _pem_from_ne(n_fermat),
+            "n": str(n_fermat),
+            "e": E,
+            "expected_hint": "FACTOR_FOUND (FERMAT)",
+        },
+        {
+            "id": "wiener-small-d",
+            "name": "Wiener small private exponent demo",
+            "description": "Public key with intentionally small d so continued-fraction Wiener attack recovers factors.",
+            "category": "weak",
+            "pem": _pem_from_ne(n_w, e_w),
+            "n": str(n_w),
+            "e": e_w,
+            "expected_hint": "FACTOR_FOUND (WIENER)",
         },
         {
             "id": "normal-demo",

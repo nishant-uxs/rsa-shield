@@ -150,7 +150,10 @@ async def create_and_run_audit(
         audit.warnings_json = result["warnings"]
         audit.recommendations_json = result["recommendations"]
         audit.timeline_json = result["timeline"]
-        audit.ecm_config_json = result["ecm_config"]
+        cfg = dict(result["ecm_config"] or {})
+        cfg["probes"] = result.get("probes")
+        cfg["factor_method"] = result.get("factor_method")
+        audit.ecm_config_json = cfg
         audit.completed_at = _utcnow()
 
         for f in result["findings"]:
@@ -260,6 +263,10 @@ async def audit_to_out(db: AsyncSession, audit: Audit) -> dict[str, Any]:
         "timeline": audit.timeline_json or [],
         "ecm": ecm,
         "ecm_config": audit.ecm_config_json,
+        "probes": (audit.ecm_config_json or {}).get("probes") if isinstance(audit.ecm_config_json, dict) else None,
+        "factor_method": (audit.ecm_config_json or {}).get("factor_method")
+        if isinstance(audit.ecm_config_json, dict)
+        else None,
         "bit_length": key.bit_length if key else None,
         "exponent": key.exponent if key else None,
         "key_label": key.label if key else None,
@@ -397,6 +404,33 @@ def _interpret(state: str | None) -> str:
         AuditState.NO_WEAKNESS_DETECTED_BY_CONFIGURED_CHECKS.value: "Configured deterministic checks did not flag an issue. This is not a formal security proof.",
         AuditState.INVALID_KEY.value: "Input could not be validated as an RSA public key/modulus.",
     }.get(state or "", "No interpretation available.")
+
+
+async def inventory_batch_gcd(db: AsyncSession) -> dict[str, Any]:
+    """Shared-factor scan across stored public moduli (educational-scale pairwise GCD)."""
+    from app.crypto.batch_gcd import batch_gcd
+    from app.crypto.parser import hex_to_int
+
+    rows = (await db.execute(select(RsaKey).order_by(RsaKey.created_at.desc()).limit(200))).scalars().all()
+    moduli = [hex_to_int(k.modulus_hex) for k in rows]
+    key_ids = [k.key_id for k in rows]
+    result = batch_gcd(moduli, key_ids)
+    return {
+        "moduli_count": result.moduli_count,
+        "pairs_checked": result.pairs_checked,
+        "hit_count": len(result.hits),
+        "message": result.message,
+        "hits": [
+            {
+                "key_id_a": h.key_id_a,
+                "key_id_b": h.key_id_b,
+                "factor_hex": format(h.factor, "x"),
+                "factor_bits": h.factor.bit_length(),
+            }
+            for h in result.hits
+        ],
+        "disclaimer": "No shared factor ≠ any key is secure. Only authorized inventory keys are scanned.",
+    }
 
 
 # silence unused import warning helpers

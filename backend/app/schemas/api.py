@@ -60,6 +60,7 @@ class AuditOut(BaseModel):
     factor_found: bool
     factor_hex: str | None = None
     cofactor_hex: str | None = None
+    factor_method: str | None = None
     elapsed_ms: float | None
     checks: list[FindingOut] = []
     warnings: list[FindingOut] = []
@@ -68,6 +69,7 @@ class AuditOut(BaseModel):
     timeline: list[dict[str, Any]] = []
     ecm: dict[str, Any] | None = None
     ecm_config: dict[str, Any] | None = None
+    probes: dict[str, Any] | None = None
     bit_length: int | None = None
     exponent: int | None = None
     key_label: str | None = None
