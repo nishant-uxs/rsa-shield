@@ -46,4 +46,39 @@ export const api = {
     request<{ report_id: string; content: Record<string, unknown>; created_at: string }>(`/reports/${audit_id}`, {
       method: "POST",
     }),
+  batchGcd: () =>
+    request<{
+      moduli_count: number;
+      pairs_checked: number;
+      hit_count: number;
+      message: string;
+      hits: { key_id_a: string; key_id_b: string; factor_hex: string; factor_bits: number }[];
+      disclaimer: string;
+    }>("/inventory/batch-gcd", { method: "POST" }),
+  evaluationSuite: (ecm_timeout_ms = 3000) =>
+    request<{
+      suite: string;
+      disclaimer: string;
+      total: number;
+      hint_matches: number;
+      rows: {
+        fixture_id: string;
+        name: string;
+        expected_hint: string;
+        final_state: string;
+        factor_found: boolean;
+        factor_method?: string | null;
+        elapsed_ms: number;
+        match_hint: boolean;
+        notes?: string;
+      }[];
+      related_work_gap: string[];
+    }>(`/evaluation/suite?ecm_timeout_ms=${ecm_timeout_ms}`),
+  relatedWork: () =>
+    request<{
+      product: string;
+      positioning: string;
+      items: { name: string; focus: string; gap_vs_us: string }[];
+      our_contributions: string[];
+    }>("/research/related-work"),
 };

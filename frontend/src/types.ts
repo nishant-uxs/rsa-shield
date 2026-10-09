@@ -35,6 +35,7 @@ export interface AuditRecord {
   factor_found: boolean;
   factor_hex?: string | null;
   cofactor_hex?: string | null;
+  factor_method?: string | null;
   elapsed_ms?: number | null;
   checks: Finding[];
   warnings: Finding[];
@@ -43,6 +44,7 @@ export interface AuditRecord {
   timeline: { at: string; event: string; detail: string }[];
   ecm?: Record<string, unknown> | null;
   ecm_config?: Record<string, unknown> | null;
+  probes?: Record<string, unknown> | null;
   bit_length?: number | null;
   exponent?: number | null;
   key_label?: string | null;
