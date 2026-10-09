@@ -74,6 +74,74 @@ export const api = {
       }[];
       related_work_gap: string[];
     }>(`/evaluation/suite?ecm_timeout_ms=${ecm_timeout_ms}`),
+  researchBundle: (ecm_timeout_ms = 2500, corpus_size = 36) =>
+    request<{
+      bundle: string;
+      never_secure_policy: boolean;
+      fixture_suite: {
+        total: number;
+        hint_matches: number;
+        rows: {
+          fixture_id: string;
+          name: string;
+          expected_hint: string;
+          final_state: string;
+          factor_found: boolean;
+          factor_method?: string | null;
+          elapsed_ms: number;
+          match_hint: boolean;
+        }[];
+        related_work_gap: string[];
+      };
+      ablation: {
+        summary: Record<
+          string,
+          { factor_hits_on_weak_fixtures: number; weak_fixtures: number; hit_rate: number | null; avg_ms: number }
+        >;
+        matrix: {
+          fixture_id: string;
+          name: string;
+          expects_factor: boolean;
+          probes: Record<string, { factor_found: boolean; elapsed_ms: number; method?: string | null }>;
+        }[];
+      };
+      configuration_comparison: {
+        aggregates: {
+          config_id: string;
+          label: string;
+          tp: number;
+          fp: number;
+          tn: number;
+          fn: number;
+          precision: number | null;
+          recall: number | null;
+          avg_ms: number;
+          emits_secure_label: boolean;
+        }[];
+        external_tools: Record<string, { available: boolean; note: string; version?: string }>;
+      };
+      mini_corpus: {
+        corpus_size: number;
+        class_counts: Record<string, number>;
+        factor_finds_by_class: Record<string, number>;
+        batch_gcd: { hit_count: number; pairs_checked: number };
+        secure_labels_emitted: number;
+        summary: {
+          keys_with_factor_evidence: number;
+          keys_inconclusive_or_suspicious: number;
+          shared_factor_collisions: number;
+        };
+        sample_rows: {
+          id: string;
+          class: string;
+          bits: number;
+          factor_found: boolean;
+          method?: string | null;
+          elapsed_ms: number;
+          state: string;
+        }[];
+      };
+    }>(`/evaluation/research-bundle?ecm_timeout_ms=${ecm_timeout_ms}&corpus_size=${corpus_size}`),
   relatedWork: () =>
     request<{
       product: string;
