@@ -20,9 +20,23 @@ It does **not** claim a new factorization algorithm or an Internet-scale measure
 3. Controlled Test Lab fixtures + `/api/v1/evaluation/suite`  
 4. Inventory batch-GCD for shared-factor collisions among stored public keys  
 5. Full-stack artifact (React + FastAPI) for demos and coursework  
+6. Research evaluation bundle: ablation, configuration precision/recall, mini synthetic corpus  
+
+## Paper tables (API)
+
+| Table | Endpoint |
+|-------|----------|
+| Fixture results | `GET /api/v1/evaluation/suite` |
+| Ablation / probe contribution | `GET /api/v1/evaluation/ablation` |
+| Config precision–recall | `GET /api/v1/evaluation/comparison` |
+| Mini corpus + batch-GCD | `GET /api/v1/evaluation/corpus` |
+| All-in-one JSON | `GET /api/v1/evaluation/research-bundle` |
+
+UI: `/app/evaluation` → download JSON bundle for camera-ready tables.
 
 ## What we do **not** claim
 
 - Breaking modern strong RSA  
 - Formal security proofs from inconclusive ECM  
 - Parity with production detectors (badkeys / crocs ROCA) on all CVEs  
+- Internet-scale measurement (mini corpus is synthetic / lab-sized)  
