@@ -158,3 +158,62 @@ async def generate_report(audit_id: str, db: AsyncSession = Depends(get_db)):
         "content": report.content_json or {},
         "created_at": report.created_at,
     }
+
+
+@router.post("/inventory/batch-gcd")
+async def inventory_batch_gcd(db: AsyncSession = Depends(get_db)):
+    """Pairwise shared-factor scan over stored public moduli (authorized inventory only)."""
+    return await audit_service.inventory_batch_gcd(db)
+
+
+@router.get("/evaluation/suite")
+async def evaluation_suite(ecm_timeout_ms: int = Query(3000, ge=500, le=30_000)):
+    """Reproducible fixture evaluation for demos / paper tables (never claims SECURE)."""
+    from app.services.evaluation import run_evaluation_suite
+
+    return run_evaluation_suite(ecm_timeout_ms=ecm_timeout_ms)
+
+
+@router.get("/research/related-work")
+async def related_work():
+    """Positioning vs prior tools — honest gap statement for academic framing."""
+    return {
+        "product": "RSA-SHIELD",
+        "positioning": (
+            "Evidence-tiered educational public-key auditing platform with budgeted probes. "
+            "Not a novel factorization algorithm and not an Internet-scale measurement study."
+        ),
+        "items": [
+            {
+                "name": "Mining Your Ps and Qs (Heninger et al., USENIX Security 2012)",
+                "focus": "Internet-scale shared RSA factors via batch GCD",
+                "gap_vs_us": "We provide inventory-scale pairwise GCD for authorized keys only, not IPv4 scans.",
+            },
+            {
+                "name": "ROCA (CCS 2017) + crocs-muni/roca",
+                "focus": "Infineon key fingerprint + Coppersmith factorization",
+                "gap_vs_us": "We ship an educational fingerprint heuristic; authoritative re-check recommended.",
+            },
+            {
+                "name": "badkeys (Hanno Böck)",
+                "focus": "Production checker for known vulnerable key classes",
+                "gap_vs_us": "Broader vuln coverage; we emphasize evidence tiers + lab pedagogy + ECM budget.",
+            },
+            {
+                "name": "RsaCtfTool",
+                "focus": "Multi-attack CTF factorization toolbox",
+                "gap_vs_us": "Attack-oriented CLI; we are an audit UI with never-SECURE classification.",
+            },
+            {
+                "name": "Fermat in the wild (ePrint 2023) / RSAScan",
+                "focus": "Close-prime / GPU weak-key scanning at scale",
+                "gap_vs_us": "We include a budgeted Fermat probe for near-twins inside the audit pipeline.",
+            },
+        ],
+        "our_contributions": [
+            "End-to-end audit pipeline: parse → analyze → Fermat → Wiener → ROCA fingerprint → ECM",
+            "Evidence taxonomy that forbids absolute SECURE labels",
+            "Controlled Test Lab fixtures + reproducible evaluation suite endpoint",
+            "Inventory batch-GCD for shared-factor collisions among stored public keys",
+        ],
+    }
