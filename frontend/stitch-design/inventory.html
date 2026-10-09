@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RSA-SHIELD — Cryptographic Key Inventory &amp; Modulus Registry</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Sora:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Custom Config -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-container": "#005763",
+            "inverse-primary": "#006877",
+            "on-secondary-fixed-variant": "#4f319c",
+            "on-surface": "#e1e2eb",
+            "on-secondary-fixed": "#21005e",
+            "inverse-surface": "#e1e2eb",
+            "surface-tint": "#2fd9f4",
+            "surface-dim": "#10131a",
+            "error-container": "#93000a",
+            "surface-variant": "#32353c",
+            "outline": "#859397",
+            "primary-container": "#22d3ee",
+            "on-background": "#e1e2eb",
+            "surface-bright": "#363940",
+            "outline-variant": "#3c494c",
+            "primary-fixed-dim": "#2fd9f4",
+            "surface-container-highest": "#32353c",
+            "surface-container-low": "#191c22",
+            "on-secondary-container": "#bea8ff",
+            "secondary-container": "#4f319c",
+            "on-tertiary-fixed": "#2a1700",
+            "error": "#ffb4ab",
+            "tertiary-fixed-dim": "#ffb95f",
+            "on-surface-variant": "#bbc9cd",
+            "primary-fixed": "#a2eeff",
+            "on-primary-fixed": "#001f25",
+            "on-primary": "#00363e",
+            "surface-container-high": "#272a31",
+            "on-secondary": "#381385",
+            "tertiary-fixed": "#ffddb8",
+            "surface": "#10131a",
+            "primary": "#8aebff",
+            "tertiary": "#ffd6a7",
+            "on-tertiary": "#472a00",
+            "secondary-fixed-dim": "#cebdff",
+            "on-error-container": "#ffdad6",
+            "on-tertiary-fixed-variant": "#653e00",
+            "inverse-on-surface": "#2e3037",
+            "on-error": "#690005",
+            "on-primary-fixed-variant": "#004e5a",
+            "tertiary-container": "#ffb147",
+            "secondary-fixed": "#e8ddff",
+            "surface-container-lowest": "#0b0e14",
+            "secondary": "#cebdff",
+            "on-tertiary-container": "#704500",
+            "background": "#10131a",
+            "surface-container": "#1d2026"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "margin": "2rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2.5rem"
+          },
+          "fontFamily": {
+            "headline-sm": ["Space Grotesk"],
+            "headline-lg": ["Space Grotesk"],
+            "label-sm": ["JetBrains Mono"],
+            "body-lg": ["Sora"],
+            "body-sm": ["Sora"],
+            "headline-md": ["Space Grotesk"],
+            "body-md": ["Sora"],
+            "label-md": ["JetBrains Mono"],
+            "label-lg": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"]
+          },
+          "fontSize": {
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "headline-xl": ["36px", { "lineHeight": "44px", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0e14;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #272a31;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3c494c;
+    }
+
+    /* Glass card custom translucent filter */
+    .glass-panel {
+      background: rgba(17, 21, 29, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .glass-header {
+      background: rgba(11, 14, 20, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-row overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- ========================================================================= -->
+<!-- 1. LEFT NAVIGATION DRAWER (Shared Component: SideNavBar)                  -->
+<!-- ========================================================================= -->
+<aside class="fixed left-0 top-0 h-screen w-64 z-40 flex flex-col justify-between p-4 border-r border-outline-variant bg-surface-container-lowest shrink-0">
+<div class="flex flex-col gap-5">
+<!-- Brand & Identity -->
+<div class="flex items-center gap-3 px-2 pt-1">
+<div class="h-9 w-9 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary shadow-[0_0_12px_rgba(34,211,238,0.18)]">
+<span class="material-symbols-outlined text-xl" data-icon="shield">shield</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-sm font-headline-sm tracking-tight font-semibold text-primary">RSA-SHIELD</span>
+<span class="text-label-sm font-label-sm text-outline flex items-center gap-1.5">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+            Engine v4.12.0 • Active
+          </span>
+</div>
+</div>
+<!-- Ingest CTA -->
+<button class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-lg bg-primary-container text-on-primary-container font-label-md text-label-md font-semibold transition-all hover:brightness-110 shadow-[0_0_16px_rgba(34,211,238,0.25)] cursor-pointer">
+<span class="material-symbols-outlined text-base" data-icon="add_circle">add_circle</span>
+<span>Ingest PEM / Keys</span>
+</button>
+<!-- Nav Links -->
+<nav class="flex flex-col gap-1 mt-1">
+<!-- Dashboard -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg" data-icon="space_dashboard">space_dashboard</span>
+<span>Dashboard</span>
+</div>
+</a>
+<!-- RSA Auditor -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg" data-icon="enhanced_encryption">enhanced_encryption</span>
+<span>RSA Auditor</span>
+</div>
+</a>
+<!-- Key Inventory (ACTIVE) -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg bg-surface-container-high text-primary font-label-md text-label-md border-l-2 border-primary transition-all duration-150 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg" data-icon="vpn_key">vpn_key</span>
+<span class="font-semibold">Key Inventory</span>
+</div>
+<span class="px-1.5 py-0.5 text-label-sm font-label-sm rounded bg-surface-container-lowest text-primary border border-outline-variant font-semibold">1.4M</span>
+</a>
+<!-- ECM Analysis -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg" data-icon="grain">grain</span>
+<span>ECM Analysis</span>
+</div>
+</a>
+<!-- Test Lab -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg" data-icon="science">science</span>
+<span>Test Lab</span>
+</div>
+</a>
+<!-- Report Center -->
+<a class="flex items-center justify-between px-3 py-2 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-lg" data-icon="assignment">assignment</span>
+<span>Report Center</span>
+</div>
+</a>
+</nav>
+</div>
+<!-- Sidebar Footer Telemetry & User -->
+<div class="flex flex-col gap-3 pt-3 border-t border-outline-variant">
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-1.5 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-base" data-icon="dns">dns</span>
+<span>Engine Telemetry</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-1.5 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-base" data-icon="settings">settings</span>
+<span>System Settings</span>
+</a>
+</div>
+<!-- User Card -->
+<div class="p-2.5 rounded-lg bg-surface-container border border-outline-variant/60 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-label-sm font-semibold">
+          CV
+        </div>
+<div class="flex flex-col overflow-hidden">
+<span class="text-label-sm font-label-sm text-on-surface font-semibold truncate">c.vance@secops.corp</span>
+<span class="text-label-sm font-label-sm text-outline truncate">L3 Cryptanalyst</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- ========================================================================= -->
+<!-- MAIN WORKSPACE CONTAINER (Offset by 256px for Sidebar)                    -->
+<!-- ========================================================================= -->
+<main class="ml-64 flex-1 flex flex-col min-w-0 bg-background pb-20">
+<!-- ======================================================================= -->
+<!-- 2. TOP NAVIGATION BAR (Shared Component: TopNavBar)                     -->
+<!-- ======================================================================= -->
+<header class="sticky top-0 z-30 flex items-center justify-between px-6 h-16 w-full border-b border-outline-variant glass-header">
+<!-- Breadcrumb & Search -->
+<div class="flex items-center gap-4 flex-1 max-w-2xl">
+<div class="hidden xl:flex items-center gap-2 text-label-sm font-label-sm text-on-surface-variant shrink-0">
+<span>Cryptanalysis Engine</span>
+<span class="material-symbols-outlined text-xs" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-semibold">Key Inventory</span>
+<span class="material-symbols-outlined text-xs" data-icon="chevron_right">chevron_right</span>
+<span class="text-outline">Registry</span>
+</div>
+<!-- Global Search Input -->
+<div class="relative w-full max-w-lg">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-lg" data-icon="search">search</span>
+</span>
+<input class="w-full pl-9 pr-12 py-1.5 text-label-sm font-label-sm bg-surface-container-lowest border border-outline-variant rounded-lg text-on-surface placeholder:text-outline focus:border-primary-container focus:outline-none focus:ring-1 focus:ring-primary-container transition-all" placeholder="Search by Modulus (hex), Key ID, SHA-256 fingerprint, or DNS SAN..." type="text"/>
+<div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
+<kbd class="px-1.5 py-0.5 text-label-sm font-label-sm rounded bg-surface-container-high border border-outline-variant text-outline">⌘K</kbd>
+</div>
+</div>
+</div>
+<!-- Telemetry status pills & Actions -->
+<div class="flex items-center gap-3">
+<!-- Status cluster -->
+<div class="hidden lg:flex items-center gap-2">
+<div class="px-2.5 py-1 rounded bg-surface-container-high border border-outline-variant/60 flex items-center gap-1.5 text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-xs text-primary" data-icon="database">database</span>
+<span class="text-on-surface-variant">Keyring:</span>
+<span class="text-primary font-semibold">1,428,950</span>
+</div>
+<div class="px-2.5 py-1 rounded bg-surface-container-high border border-outline-variant/60 flex items-center gap-1.5 text-label-sm font-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+<span class="text-on-surface-variant">Continuous Scanner:</span>
+<span class="text-primary font-semibold">Active</span>
+</div>
+<div class="px-2.5 py-1 rounded bg-surface-container-high border border-outline-variant/60 flex items-center gap-1.5 text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-xs text-outline" data-icon="cloud">cloud</span>
+<span class="text-outline">US-East-01</span>
+</div>
+</div>
+<div class="h-6 w-px bg-outline-variant mx-1 hidden sm:block"></div>
+<!-- Quick actions -->
+<button class="px-3 py-1.5 rounded-lg border border-outline-variant bg-surface-container text-on-surface font-label-sm text-label-sm hover:border-primary hover:text-primary transition-colors flex items-center gap-1.5 cursor-pointer">
+<span class="material-symbols-outlined text-base" data-icon="sync">sync</span>
+<span class="hidden sm:inline">Batch Re-Audit</span>
+</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-high border border-outline-variant text-on-surface font-label-sm text-label-sm hover:bg-surface-variant transition-colors flex items-center gap-1.5 cursor-pointer">
+<span class="material-symbols-outlined text-base" data-icon="download">download</span>
+<span class="hidden md:inline">Export</span>
+</button>
+</div>
+</header>
+<!-- ======================================================================= -->
+<!-- 3. INVENTORY STATS HEADER / KPI STRIP                                   -->
+<!-- ======================================================================= -->
+<section class="p-6 pb-2">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+<!-- Total Managed Keys -->
+<div class="p-4 rounded-xl border border-outline-variant glass-panel relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-transparent"></div>
+<div class="flex items-center justify-between text-outline text-label-sm font-label-sm mb-2">
+<span>TOTAL MANAGED KEYS</span>
+<span class="material-symbols-outlined text-base text-primary" data-icon="vpn_key">vpn_key</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-headline-lg font-headline-lg font-bold text-on-surface">1,428,950</span>
+<span class="text-label-sm font-label-sm text-primary font-medium">+1,240 today</span>
+</div>
+<div class="mt-2 text-label-sm font-label-sm text-outline">Across 34 Cloud Regions &amp; HSMs</div>
+</div>
+<!-- Factored / Compromised (CRITICAL) -->
+<div class="p-4 rounded-xl border border-error/40 bg-surface-container-low relative overflow-hidden flex flex-col justify-between shadow-[0_0_24px_rgba(248,113,113,0.12)]">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-error animate-pulse"></div>
+<div class="flex items-center justify-between text-error text-label-sm font-label-sm mb-2">
+<span class="font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>
+              FACTOR COMPROMISED
+            </span>
+<span class="material-symbols-outlined text-base text-error" data-icon="warning">warning</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-headline-lg font-headline-lg font-bold text-error">3</span>
+<span class="px-1.5 py-0.5 rounded text-label-sm font-label-sm bg-error-container text-on-error-container font-semibold">URGENT CRL</span>
+</div>
+<div class="mt-2 text-label-sm font-label-sm text-outline">Private prime recovered (Wiener/ROCA)</div>
+</div>
+<!-- Suspicious -->
+<div class="p-4 rounded-xl border border-tertiary-container/30 glass-panel relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-tertiary-container"></div>
+<div class="flex items-center justify-between text-tertiary-container text-label-sm font-label-sm mb-2">
+<span>SUSPICIOUS VECTORS</span>
+<span class="material-symbols-outlined text-base text-tertiary-container" data-icon="report">report</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-headline-lg font-headline-lg font-bold text-on-surface">47</span>
+<span class="text-label-sm font-label-sm text-tertiary-container font-medium">Low prime gap / e=3</span>
+</div>
+<div class="mt-2 text-label-sm font-label-sm text-outline">Fermat delta |p-q| within bounds</div>
+</div>
+<!-- NIST Compliant -->
+<div class="p-4 rounded-xl border border-outline-variant glass-panel relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary"></div>
+<div class="flex items-center justify-between text-outline text-label-sm font-label-sm mb-2">
+<span>NIST COMPLIANT (≥2048)</span>
+<span class="material-symbols-outlined text-base text-primary" data-icon="verified_user">verified_user</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-headline-lg font-headline-lg font-bold text-on-surface">1,428,888</span>
+<span class="text-label-sm font-label-sm text-primary font-medium">99.99%</span>
+</div>
+<div class="mt-2 text-label-sm font-label-sm text-outline">Formal zero-factor mathematical proof</div>
+</div>
+<!-- Inconclusive -->
+<div class="p-4 rounded-xl border border-outline-variant glass-panel relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-secondary"></div>
+<div class="flex items-center justify-between text-outline text-label-sm font-label-sm mb-2">
+<span>INCONCLUSIVE (GNFS QUEUED)</span>
+<span class="material-symbols-outlined text-base text-secondary" data-icon="pending">pending</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-headline-lg font-headline-lg font-bold text-on-surface">12</span>
+<span class="text-label-sm font-label-sm text-secondary font-medium">ECM B1=10^8 passed</span>
+</div>
+<div class="mt-2 text-label-sm font-label-sm text-outline">Deep sieve job scheduled on GPU node</div>
+</div>
+</div>
+</section>
+<!-- ======================================================================= -->
+<!-- 4. FILTER BAR & CONTROLS                                                -->
+<!-- ======================================================================= -->
+<section class="p-6 py-3">
+<div class="p-3 rounded-xl border border-outline-variant glass-panel flex flex-col lg:flex-row gap-3 items-start lg:items-center justify-between">
+<!-- Filter chips left -->
+<div class="flex flex-wrap items-center gap-2">
+<span class="text-label-sm font-label-sm text-outline mr-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="tune">tune</span>
+            Filter:
+          </span>
+<!-- Length Chips -->
+<button class="px-2.5 py-1 rounded-md text-label-sm font-label-sm bg-primary-container text-on-primary-container font-semibold cursor-pointer">
+            All Lengths (1.4M)
+          </button>
+<button class="px-2.5 py-1 rounded-md text-label-sm font-label-sm bg-surface-container border border-outline-variant text-on-surface-variant hover:text-on-surface hover:border-outline transition-colors cursor-pointer">
+            4096-bit <span class="text-outline">917k</span>
+</button>
+<button class="px-2.5 py-1 rounded-md text-label-sm font-label-sm bg-surface-container border border-outline-variant text-on-surface-variant hover:text-on-surface hover:border-outline transition-colors cursor-pointer">
+            3072-bit <span class="text-outline">406k</span>
+</button>
+<button class="px-2.5 py-1 rounded-md text-label-sm font-label-sm bg-surface-container border border-outline-variant text-on-surface-variant hover:text-on-surface hover:border-outline transition-colors cursor-pointer">
+            2048-bit <span class="text-outline">101k</span>
+</button>
+<button class="px-2.5 py-1 rounded-md text-label-sm font-label-sm bg-surface-container border border-error/30 text-error hover:bg-error-container/20 transition-colors cursor-pointer flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+            &lt;2048 Deprecated <span class="text-error/70">4.2k</span>
+</button>
+<div class="h-4 w-px bg-outline-variant mx-1"></div>
+<!-- State Dropdown -->
+<div class="relative">
+<select class="pl-2.5 pr-8 py-1 bg-surface-container border border-outline-variant text-on-surface font-label-sm text-label-sm rounded-md appearance-none focus:outline-none focus:border-primary-container cursor-pointer">
+<option>All Audit States</option>
+<option>● FACTOR_FOUND (Compromised)</option>
+<option>● SUSPICIOUS (Weak Lattice)</option>
+<option>● INCONCLUSIVE (Sieve Pending)</option>
+<option>● VERIFIED CLEAN</option>
+</select>
+<span class="absolute right-2 top-1.5 pointer-events-none material-symbols-outlined text-sm text-outline" data-icon="expand_more">expand_more</span>
+</div>
+<!-- Service Source -->
+<div class="relative">
+<select class="pl-2.5 pr-8 py-1 bg-surface-container border border-outline-variant text-on-surface font-label-sm text-label-sm rounded-md appearance-none focus:outline-none focus:border-primary-container cursor-pointer">
+<option>All Sources (TLS, SSH, HSM)</option>
+<option>TLS / HTTPS Certificates</option>
+<option>SSH Hostkeys</option>
+<option>HSM Root Keys</option>
+<option>Code Signing CAs</option>
+</select>
+<span class="absolute right-2 top-1.5 pointer-events-none material-symbols-outlined text-sm text-outline" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Controls right -->
+<div class="flex items-center gap-2 self-end lg:self-auto">
+<!-- Sort -->
+<div class="flex items-center gap-1 text-label-sm font-label-sm text-outline">
+<span>Sort:</span>
+<select class="bg-surface-container border border-outline-variant text-on-surface font-label-sm text-label-sm rounded-md py-1 px-2 focus:outline-none focus:border-primary-container cursor-pointer">
+<option>Last Audit Time (Desc)</option>
+<option>Key Length (Desc)</option>
+<option>Risk Severity (Highest)</option>
+<option>Entropy Deviation</option>
+</select>
+</div>
+<!-- Density Toggle -->
+<div class="flex items-center p-0.5 rounded-md bg-surface-container border border-outline-variant text-outline">
+<button class="p-1 rounded bg-surface-container-high text-primary hover:text-on-surface" title="Compact Table">
+<span class="material-symbols-outlined text-base block" data-icon="density_small">density_small</span>
+</button>
+<button class="p-1 rounded text-on-surface-variant hover:text-on-surface" title="Comfortable View">
+<span class="material-symbols-outlined text-base block" data-icon="density_medium">density_medium</span>
+</button>
+</div>
+<!-- Columns Selector -->
+<button class="px-2.5 py-1 rounded-md bg-surface-container border border-outline-variant text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm flex items-center gap-1 cursor-pointer">
+<span class="material-symbols-outlined text-base" data-icon="view_column">view_column</span>
+<span>Columns</span>
+</button>
+</div>
+</div>
+</section>
+<!-- ======================================================================= -->
+<!-- 5. PRIMARY PUBLIC KEY INVENTORY TABLE                                   -->
+<!-- ======================================================================= -->
+<section class="p-6 py-2">
+<div class="rounded-xl border border-outline-variant overflow-hidden glass-panel shadow-[0_8px_32px_-4px_rgba(0,0,0,0.5)]">
+<!-- Table container with horizontal scroll support -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant bg-surface-container-low text-label-sm font-label-sm text-outline uppercase tracking-wider">
+<th class="py-3 px-4 w-10 text-center">
+<input class="rounded border-outline-variant bg-surface-container text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</th>
+<th class="py-3 px-4 min-w-[240px]">Key ID &amp; DNS Subject</th>
+<th class="py-3 px-4 min-w-[150px]">Modulus Spec</th>
+<th class="py-3 px-4 min-w-[180px]">Public Exponent (e)</th>
+<th class="py-3 px-4 min-w-[210px]">SHA-256 Fingerprint</th>
+<th class="py-3 px-4 min-w-[230px]">Audit Status &amp; Evidence</th>
+<th class="py-3 px-4 min-w-[120px]">Discovered</th>
+<th class="py-3 px-4 text-right min-w-[120px]">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/40 text-label-sm font-label-sm">
+<!-- ROW 1: CRITICAL FACTORED (Wiener lattice) -->
+<tr class="hover:bg-surface-container/60 transition-colors group bg-error-container/10 border-l-2 border-l-error">
+<td class="py-3.5 px-4 text-center">
+<input checked="" class="rounded border-outline-variant bg-surface-container text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-semibold text-on-surface group-hover:text-primary transition-colors">legacy-vpn-gw</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-label-sm bg-error-container text-on-error-container border border-error/30 font-bold uppercase tracking-wider">CRITICAL</span>
+</div>
+<span class="text-outline text-xs mt-0.5 flex items-center gap-1 font-body-sm">
+<span class="material-symbols-outlined text-xs" data-icon="language">language</span>
+                      vpn.internal.corp.net
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-error font-semibold">1024-bit RSA</span>
+<span class="text-[10px] text-outline">Deprecated &lt;2048</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-on-surface">e = 0x10001</span>
+<span class="text-[10px] text-error">Small private exponent d &lt; N^0.25</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-mono">
+<span>9f82c41d...81e4b9</span>
+<button class="opacity-0 group-hover:opacity-100 hover:text-primary transition-opacity" title="Copy Modulus Hex">
+<span class="material-symbols-outlined text-xs" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col gap-1 items-start">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-error-container text-on-error-container border border-error/50 font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="dangerous">dangerous</span>
+                      FACTOR_FOUND
+                    </span>
+<span class="text-[11px] text-error font-body-sm">p, q recovered via Wiener lattice (0.42s)</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-outline font-body-sm">
+                  12m ago
+                </td>
+<td class="py-3.5 px-4 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 rounded bg-error-container text-on-error-container text-xs font-semibold hover:brightness-125 transition-all cursor-pointer">
+                      Revoke CRL
+                    </button>
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface" title="Inspect Modulus">
+<span class="material-symbols-outlined text-base" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 2: SUSPICIOUS (Fermat Delta) -->
+<tr class="hover:bg-surface-container/60 transition-colors group border-l-2 border-l-tertiary-container">
+<td class="py-3.5 px-4 text-center">
+<input checked="" class="rounded border-outline-variant bg-surface-container text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-semibold text-on-surface group-hover:text-primary transition-colors">prod-api-gw-us-east</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-label-sm bg-tertiary-container/20 text-tertiary-container border border-tertiary-container/30 font-semibold uppercase">ALERT</span>
+</div>
+<span class="text-outline text-xs mt-0.5 flex items-center gap-1 font-body-sm">
+<span class="material-symbols-outlined text-xs" data-icon="dns">dns</span>
+                      api.gateway.enterprise.io
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-on-surface font-semibold">2048-bit RSA</span>
+<span class="text-[10px] text-outline">OpenSSL 1.0.2k</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-tertiary-container font-semibold">e = 3 (Low Exp)</span>
+<span class="text-[10px] text-outline">Coppersmith boundary risk</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-mono">
+<span>3b194a02...ca7812</span>
+<button class="opacity-0 group-hover:opacity-100 hover:text-primary transition-opacity" title="Copy Modulus Hex">
+<span class="material-symbols-outlined text-xs" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col gap-1 items-start">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-tertiary-container/20 text-tertiary-container border border-tertiary-container/40 font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="warning">warning</span>
+                      SUSPICIOUS
+                    </span>
+<span class="text-[11px] text-on-surface-variant font-body-sm">Fermat delta |p-q| &lt; 2^56</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-outline font-body-sm">
+                  48m ago
+                </td>
+<td class="py-3.5 px-4 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 rounded bg-surface-container border border-outline-variant hover:border-primary text-on-surface text-xs font-semibold transition-all cursor-pointer">
+                      Sieve ECM
+                    </button>
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-base" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 3: VERIFIED CLEAN (4096-bit) -->
+<tr class="hover:bg-surface-container/60 transition-colors group">
+<td class="py-3.5 px-4 text-center">
+<input checked="" class="rounded border-outline-variant bg-surface-container text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-semibold text-on-surface group-hover:text-primary transition-colors">payment-vault-hsm</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-label-sm bg-surface-container-high text-primary border border-outline-variant font-semibold">FIPS 140-2</span>
+</div>
+<span class="text-outline text-xs mt-0.5 flex items-center gap-1 font-body-sm">
+<span class="material-symbols-outlined text-xs" data-icon="lock">lock</span>
+                      vault-pci.internal.hsm
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-primary font-semibold">4096-bit RSA</span>
+<span class="text-[10px] text-outline">Hardware TRNG generated</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-on-surface">e = 65537 (0x10001)</span>
+<span class="text-[10px] text-outline">Standard Fermat F4</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-mono">
+<span>e724bb91...4419ad</span>
+<button class="opacity-0 group-hover:opacity-100 hover:text-primary transition-opacity" title="Copy Modulus Hex">
+<span class="material-symbols-outlined text-xs" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col gap-1 items-start">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-primary/10 text-primary border border-primary/30 font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="verified">verified</span>
+                      VERIFIED_CLEAN
+                    </span>
+<span class="text-[11px] text-outline font-body-sm">Formal No-Factor Proof (Pollard P-1 pass)</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-outline font-body-sm">
+                  2h ago
+                </td>
+<td class="py-3.5 px-4 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 rounded bg-surface-container border border-outline-variant hover:border-primary text-on-surface text-xs font-semibold transition-all cursor-pointer">
+                      Inspect
+                    </button>
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-base" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 4: INCONCLUSIVE (GNFS Sieve) -->
+<tr class="hover:bg-surface-container/60 transition-colors group">
+<td class="py-3.5 px-4 text-center">
+<input class="rounded border-outline-variant bg-surface-container text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-semibold text-on-surface group-hover:text-primary transition-colors">key-auth-edge-01</span>
+</div>
+<span class="text-outline text-xs mt-0.5 flex items-center gap-1 font-body-sm">
+<span class="material-symbols-outlined text-xs" data-icon="vpn_lock">vpn_lock</span>
+                      auth.edge.cloudflare-origin
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-on-surface font-semibold">2048-bit RSA</span>
+<span class="text-[10px] text-outline">BoringSSL 2023.11</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-on-surface">e = 65537 (0x10001)</span>
+<span class="text-[10px] text-outline">Standard Fermat F4</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-mono">
+<span>1a84f330...cc5011</span>
+<button class="opacity-0 group-hover:opacity-100 hover:text-primary transition-opacity" title="Copy Modulus Hex">
+<span class="material-symbols-outlined text-xs" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col gap-1 items-start">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-secondary-container/20 text-secondary border border-secondary-container font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="hourglass_top">hourglass_top</span>
+                      INCONCLUSIVE
+                    </span>
+<span class="text-[11px] text-outline font-body-sm">ECM 120b limit reached (Queue: GNFS-6)</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-outline font-body-sm">
+                  3h ago
+                </td>
+<td class="py-3.5 px-4 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 rounded bg-surface-container border border-outline-variant hover:border-primary text-on-surface text-xs font-semibold transition-all cursor-pointer">
+                      Re-Queue
+                    </button>
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-base" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 5: VERIFIED CLEAN (Wildcard cert) -->
+<tr class="hover:bg-surface-container/60 transition-colors group">
+<td class="py-3.5 px-4 text-center">
+<input class="rounded border-outline-variant bg-surface-container text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-semibold text-on-surface group-hover:text-primary transition-colors">k8s-ingress-wildcard</span>
+</div>
+<span class="text-outline text-xs mt-0.5 flex items-center gap-1 font-body-sm">
+<span class="material-symbols-outlined text-xs" data-icon="tag">tag</span>
+                      *.cluster.us-east.k8s.io
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-on-surface font-semibold">3072-bit RSA</span>
+<span class="text-[10px] text-outline">cert-manager Let's Encrypt</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-on-surface">e = 65537 (0x10001)</span>
+<span class="text-[10px] text-outline">Standard Fermat F4</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-mono">
+<span>55c0e18f...20aa48</span>
+<button class="opacity-0 group-hover:opacity-100 hover:text-primary transition-opacity" title="Copy Modulus Hex">
+<span class="material-symbols-outlined text-xs" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col gap-1 items-start">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-primary/10 text-primary border border-primary/30 font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="verified">verified</span>
+                      VERIFIED_CLEAN
+                    </span>
+<span class="text-[11px] text-outline font-body-sm">Formal No-Factor Proof (ROCA Negated)</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-outline font-body-sm">
+                  5h ago
+                </td>
+<td class="py-3.5 px-4 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 rounded bg-surface-container border border-outline-variant hover:border-primary text-on-surface text-xs font-semibold transition-all cursor-pointer">
+                      Inspect
+                    </button>
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-base" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 6: FACTORED (ROCA Return of Coppersmith) -->
+<tr class="hover:bg-surface-container/60 transition-colors group bg-error-container/10 border-l-2 border-l-error">
+<td class="py-3.5 px-4 text-center">
+<input class="rounded border-outline-variant bg-surface-container text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-semibold text-on-surface group-hover:text-primary transition-colors">smartcard-piv-ca</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-label-sm bg-error-container text-on-error-container border border-error/30 font-bold uppercase tracking-wider">CVE-2017-15361</span>
+</div>
+<span class="text-outline text-xs mt-0.5 flex items-center gap-1 font-body-sm">
+<span class="material-symbols-outlined text-xs" data-icon="badge">badge</span>
+                      Infineon SLE78 PIV Card
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-error font-semibold">2048-bit RSA</span>
+<span class="text-[10px] text-error font-bold">ROCA Vulnerable Modulus</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-on-surface">e = 65537 (0x10001)</span>
+<span class="text-[10px] text-outline">Standard Fermat F4</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-mono">
+<span>42e88a1b...802d3f</span>
+<button class="opacity-0 group-hover:opacity-100 hover:text-primary transition-opacity" title="Copy Modulus Hex">
+<span class="material-symbols-outlined text-xs" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col gap-1 items-start">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-error-container text-on-error-container border border-error/50 font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="dangerous">dangerous</span>
+                      FACTOR_FOUND
+                    </span>
+<span class="text-[11px] text-error font-body-sm">p, q recovered via ROCA Sieve (1.8s)</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-outline font-body-sm">
+                  1d ago
+                </td>
+<td class="py-3.5 px-4 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 rounded bg-error-container text-on-error-container text-xs font-semibold hover:brightness-125 transition-all cursor-pointer">
+                      Revoke CRL
+                    </button>
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-base" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 7: VERIFIED CLEAN (SSH Hostkey) -->
+<tr class="hover:bg-surface-container/60 transition-colors group">
+<td class="py-3.5 px-4 text-center">
+<input class="rounded border-outline-variant bg-surface-container text-primary-container focus:ring-0 focus:ring-offset-0 cursor-pointer" type="checkbox"/>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-semibold text-on-surface group-hover:text-primary transition-colors">bastion-ssh-host-04</span>
+<span class="px-1.5 py-0.2 rounded text-[10px] font-label-sm bg-surface-container-high text-on-surface-variant border border-outline-variant">OpenSSH 9.3</span>
+</div>
+<span class="text-outline text-xs mt-0.5 flex items-center gap-1 font-body-sm">
+<span class="material-symbols-outlined text-xs" data-icon="terminal">terminal</span>
+                      bastion-04.compute.corp
+                    </span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-on-surface font-semibold">4096-bit RSA</span>
+<span class="text-[10px] text-outline">OpenSSH ssh-rsa format</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col">
+<span class="text-on-surface">e = 65537 (0x10001)</span>
+<span class="text-[10px] text-outline">Standard Fermat F4</span>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-1.5 text-on-surface-variant font-mono">
+<span>91a0c3d4...881f10</span>
+<button class="opacity-0 group-hover:opacity-100 hover:text-primary transition-opacity" title="Copy Modulus Hex">
+<span class="material-symbols-outlined text-xs" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</td>
+<td class="py-3.5 px-4">
+<div class="flex flex-col gap-1 items-start">
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-primary/10 text-primary border border-primary/30 font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="verified">verified</span>
+                      VERIFIED_CLEAN
+                    </span>
+<span class="text-[11px] text-outline font-body-sm">Formal No-Factor Proof (Shor resistance safe)</span>
+</div>
+</td>
+<td class="py-3.5 px-4 text-outline font-body-sm">
+                  1d ago
+                </td>
+<td class="py-3.5 px-4 text-right">
+<div class="flex items-center justify-end gap-1.5">
+<button class="px-2 py-1 rounded bg-surface-container border border-outline-variant hover:border-primary text-on-surface text-xs font-semibold transition-all cursor-pointer">
+                      Inspect
+                    </button>
+<button class="p-1 rounded hover:bg-surface-container text-outline hover:text-on-surface">
+<span class="material-symbols-outlined text-base" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- =================================================================== -->
+<!-- 6. PAGINATION & BULK ACTION BAR                                     -->
+<!-- =================================================================== -->
+<div class="p-4 border-t border-outline-variant bg-surface-container-low flex flex-col md:flex-row items-center justify-between gap-4">
+<!-- Bulk actions (Visible when rows selected) -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-high border border-outline-variant text-label-sm font-label-sm">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="text-on-surface font-semibold">3 keys selected</span>
+</div>
+<div class="flex items-center gap-1.5">
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high border border-outline-variant text-primary font-label-sm text-label-sm flex items-center gap-1 cursor-pointer">
+<span class="material-symbols-outlined text-sm" data-icon="play_arrow">play_arrow</span>
+<span>Run Batch ECM Sieve</span>
+</button>
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-error-container/30 border border-error/40 text-error font-label-sm text-label-sm flex items-center gap-1 cursor-pointer">
+<span class="material-symbols-outlined text-sm" data-icon="block">block</span>
+<span>Push to CRL</span>
+</button>
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface font-label-sm text-label-sm flex items-center gap-1 cursor-pointer">
+<span class="material-symbols-outlined text-sm" data-icon="file_download">file_download</span>
+<span>Export PEMs</span>
+</button>
+</div>
+</div>
+<!-- Pagination controls -->
+<div class="flex items-center gap-3 text-label-sm font-label-sm">
+<span class="text-outline">
+              Showing <span class="text-on-surface font-semibold">1–7</span> of <span class="text-on-surface font-semibold">1,428,950</span> keys
+            </span>
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded bg-surface-container border border-outline-variant text-outline hover:text-on-surface disabled:opacity-30 cursor-pointer" disabled="">
+<span class="material-symbols-outlined text-base block" data-icon="first_page">first_page</span>
+</button>
+<button class="p-1.5 rounded bg-surface-container border border-outline-variant text-outline hover:text-on-surface disabled:opacity-30 cursor-pointer" disabled="">
+<span class="material-symbols-outlined text-base block" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="px-2.5 py-1 rounded bg-primary-container text-on-primary-container font-semibold">1</button>
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface">2</button>
+<button class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface">3</button>
+<span class="text-outline px-1">...</span>
+<button class="px-2 py-1 rounded bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface">204,136</button>
+<button class="p-1.5 rounded bg-surface-container border border-outline-variant text-outline hover:text-on-surface cursor-pointer">
+<span class="material-symbols-outlined text-base block" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="p-1.5 rounded bg-surface-container border border-outline-variant text-outline hover:text-on-surface cursor-pointer">
+<span class="material-symbols-outlined text-base block" data-icon="last_page">last_page</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

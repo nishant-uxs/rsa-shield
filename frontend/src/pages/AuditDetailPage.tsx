@@ -75,12 +75,21 @@ export function AuditDetailPage() {
               <Panel title="ECM execution">
                 <pre className="text-xs mono text-muted whitespace-pre-wrap">{JSON.stringify(audit.ecm || audit.ecm_config, null, 2)}</pre>
                 {audit.factor_found ? (
-                  <div className="mt-2 text-crit text-sm">Factor hex: <span className="mono break-all">{audit.factor_hex}</span></div>
+                  <div className="mt-2 text-crit text-sm">
+                    Factor via <span className="mono">{audit.factor_method || "probe"}</span>:{" "}
+                    <span className="mono break-all">{audit.factor_hex}</span>
+                  </div>
                 ) : (
                   <div className="mt-2 text-amber text-xs">No factor discovered within budget — inconclusive, not secure.</div>
                 )}
               </Panel>
             </div>
+
+            {audit.probes ? (
+              <Panel title="Classical probes (Fermat / Wiener / ROCA)">
+                <pre className="text-xs mono text-muted whitespace-pre-wrap">{JSON.stringify(audit.probes, null, 2)}</pre>
+              </Panel>
+            ) : null}
 
             <Panel title="Deterministic checks">
               <ul className="space-y-2 text-sm">

@@ -25,7 +25,7 @@ export function DashboardPage() {
   if (loading) {
     return (
       <>
-        <Topbar title="Overview Dashboard" subtitle="RSA cryptographic asset posture" />
+        <Topbar title="Security Operations Console" subtitle="RSA cryptographic asset posture" breadcrumb="Cryptanalysis Engine / Dashboard" />
         <div className="p-6">
           <LoadingState label="Loading dashboard…" />
         </div>
@@ -35,7 +35,7 @@ export function DashboardPage() {
   if (error) {
     return (
       <>
-        <Topbar title="Overview Dashboard" />
+        <Topbar title="Security Operations Console" />
         <div className="p-6">
           <ErrorState message={error} />
         </div>
@@ -45,7 +45,7 @@ export function DashboardPage() {
   if (!data) {
     return (
       <>
-        <Topbar title="Overview Dashboard" />
+        <Topbar title="Security Operations Console" />
         <div className="p-6">
           <EmptyState title="No data" detail="Run an audit from Test Lab to populate metrics." />
         </div>
@@ -58,7 +58,11 @@ export function DashboardPage() {
 
   return (
     <>
-      <Topbar title="Overview Dashboard" subtitle="Evidence-tiered RSA key auditing metrics" />
+      <Topbar
+        title="Security Operations Console"
+        subtitle="Evidence-tiered RSA key auditing metrics"
+        breadcrumb="Cryptanalysis Engine / Dashboard / Overview"
+      />
       <div className="p-6 space-y-6">
         <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
           <StatCard label="Keys audited" value={data.total_keys} />
@@ -82,7 +86,14 @@ export function DashboardPage() {
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip
+                    contentStyle={{
+                      background: "#191c22",
+                      border: "1px solid #3c494c",
+                      borderRadius: 8,
+                      fontSize: 12,
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -91,9 +102,16 @@ export function DashboardPage() {
             <div className="h-56">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={sizes}>
-                  <XAxis dataKey="name" stroke="#64748b" fontSize={11} />
-                  <YAxis stroke="#64748b" fontSize={11} allowDecimals={false} />
-                  <Tooltip />
+                  <XAxis dataKey="name" stroke="#859397" fontSize={11} />
+                  <YAxis stroke="#859397" fontSize={11} allowDecimals={false} />
+                  <Tooltip
+                    contentStyle={{
+                      background: "#191c22",
+                      border: "1px solid #3c494c",
+                      borderRadius: 8,
+                      fontSize: 12,
+                    }}
+                  />
                   <Bar dataKey="value" fill="#22d3ee" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -101,31 +119,40 @@ export function DashboardPage() {
           </Panel>
         </div>
 
-        <Panel title="Recent audits" action={<Link className="text-xs text-cyan" to="/app/inventory">View inventory</Link>}>
+        <Panel
+          title="Recent audits"
+          action={
+            <Link className="text-xs text-cyan mono" to="/app/inventory">
+              View inventory →
+            </Link>
+          }
+        >
           {data.recent_audits.length === 0 ? (
             <EmptyState title="No audits yet" detail="Open Test Lab and run the weak-key demo." />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
-                <thead className="text-muted text-left">
+                <thead className="text-muted text-left mono text-xs uppercase tracking-wider">
                   <tr>
-                    <th className="py-2">Audit</th>
-                    <th>Key</th>
-                    <th>State</th>
-                    <th>Duration</th>
+                    <th className="py-2 font-medium">Audit</th>
+                    <th className="font-medium">Key</th>
+                    <th className="font-medium">State</th>
+                    <th className="font-medium">Duration</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.recent_audits.map((a) => (
-                    <tr key={a.audit_id} className="border-t border-border/60">
-                      <td className="py-2 mono text-cyan">
+                    <tr key={a.audit_id} className="border-t border-border/50 hover:bg-surface-low/40 transition">
+                      <td className="py-2.5 mono text-cyan">
                         <Link to={`/app/audits/${a.audit_id}`}>{a.audit_id}</Link>
                       </td>
-                      <td className="mono text-muted">{a.key_id}</td>
+                      <td className="mono text-muted text-xs">{a.key_id}</td>
                       <td>
                         <RiskBadge state={a.final_state} />
                       </td>
-                      <td className="mono">{a.elapsed_ms != null ? `${Math.round(a.elapsed_ms)} ms` : "—"}</td>
+                      <td className="mono text-xs">
+                        {a.elapsed_ms != null ? `${Math.round(a.elapsed_ms)} ms` : "—"}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -1,51 +1,152 @@
 import { Link } from "react-router-dom";
+import { Shield, ChevronRight, FlaskConical } from "lucide-react";
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      <div className="absolute inset-0 opacity-40 pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 rounded-full bg-cyan/10 blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-96 h-96 rounded-full bg-violet/10 blur-3xl" />
-      </div>
-      <header className="relative z-10 flex items-center justify-between px-8 py-5 border-b border-border/50">
-        <div className="font-[family-name:var(--font-display)] font-semibold tracking-tight text-lg">RSA-SHIELD</div>
-        <div className="text-xs text-muted mono">Team Aegis · Bennett University</div>
-      </header>
-      <main className="relative z-10 max-w-5xl mx-auto px-6 py-20 md:py-28">
-        <div className="inline-flex items-center gap-2 rounded-full border border-cyan/30 bg-cyan/10 px-3 py-1 text-[11px] uppercase tracking-widest text-cyan mb-6">
-          Security Audit Platform
-        </div>
-        <h1 className="text-5xl md:text-6xl font-[family-name:var(--font-display)] font-bold tracking-tight text-cyan mb-4">
-          RSA-SHIELD
-        </h1>
-        <p className="text-2xl md:text-3xl text-text font-medium mb-4 max-w-2xl">
-          Mathematical Assurance for RSA Key Security
-        </p>
-        <p className="text-muted text-lg max-w-2xl mb-10 leading-relaxed">
-          Analyze RSA cryptographic assets, investigate mathematical weaknesses, and generate evidence-backed
-          security audits. Failure to factor a key is never labeled “secure”.
-        </p>
-        <div className="flex flex-wrap gap-3 mb-14">
+    <div className="min-h-screen flex flex-col bg-bg text-text">
+      <header className="sticky top-0 z-50 border-b border-border/80 bg-bg/80 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="display font-bold text-lg tracking-widest flex items-center gap-2">
+            <span className="w-8 h-8 rounded-lg bg-surface-container border border-cyan/30 grid place-items-center text-cyan shadow-[0_0_12px_rgba(34,211,238,0.25)]">
+              <Shield className="h-4 w-4" />
+            </span>
+            RSA-SHIELD
+          </div>
+          <nav className="hidden md:flex items-center gap-8 display font-semibold text-sm">
+            <Link className="text-muted hover:text-cyan transition" to="/app">
+              Audits
+            </Link>
+            <Link className="text-cyan border-b-2 border-cyan pb-0.5" to="/app/ecm">
+              Math Engine
+            </Link>
+            <Link className="text-muted hover:text-cyan transition" to="/app/lab">
+              Factorization Lab
+            </Link>
+            <Link className="text-muted hover:text-cyan transition" to="/app/reports">
+              Docs
+            </Link>
+          </nav>
           <Link
             to="/app/auditor"
-            className="rounded-lg bg-cyan text-bg px-5 py-3 text-sm font-semibold hover:bg-cyan/90 transition"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-cyan text-on-primary display font-semibold text-sm shadow-[0_0_20px_rgba(34,211,238,0.35)] hover:brightness-110 transition sheen"
           >
-            Start an Audit
-          </Link>
-          <Link
-            to="/app/lab"
-            className="rounded-lg border border-violet/40 bg-violet/10 text-violet px-5 py-3 text-sm font-semibold hover:bg-violet/20 transition"
-          >
-            Explore Test Lab
+            Launch Auditor
           </Link>
         </div>
-        <div className="glass rounded-2xl p-6 max-w-md">
-          <div className="mono text-cyan text-xl mb-2">n = p × q</div>
-          <div className="text-sm text-muted leading-relaxed">
-            Lenstra ECM is used as a budgeted factorization probe for authorized keys and controlled lab fixtures —
-            not as a magic break of modern strong RSA.
+      </header>
+
+      <main className="flex-1 math-grid-bg relative overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[450px] bg-cyan/10 rounded-full blur-[140px] pointer-events-none -z-10" />
+        <div className="absolute top-1/3 right-1/4 w-[400px] h-[300px] bg-violet/10 rounded-full blur-[120px] pointer-events-none -z-10" />
+
+        <section className="max-w-7xl mx-auto px-6 pt-16 pb-20 lg:pt-20 lg:pb-28 flex flex-col items-center text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass border border-border/40 mb-8">
+            <span className="w-2 h-2 rounded-full bg-cyan animate-pulse shadow-[0_0_8px_#22d3ee]" />
+            <span className="mono text-[11px] tracking-wider uppercase text-muted">
+              Enterprise cryptographic assurance · Educational auditor
+            </span>
           </div>
-        </div>
+
+          <div className="max-w-5xl mx-auto space-y-4">
+            <h2 className="display text-sm uppercase tracking-[0.28em] text-cyan font-bold">RSA-SHIELD</h2>
+            <h1 className="display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.12]">
+              Mathematical Assurance for{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan via-primary to-secondary">
+                RSA Key Security
+              </span>
+            </h1>
+            <p className="text-lg text-muted max-w-3xl mx-auto pt-2 leading-relaxed">
+              Continuously analyze RSA public keys against factorization probes and configuration checks. Failure to
+              factor is never labeled “secure”.
+            </p>
+          </div>
+
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md mx-auto">
+            <Link
+              to="/app/auditor"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-cyan text-on-primary display text-sm font-semibold shadow-[0_0_24px_rgba(34,211,238,0.4)] hover:brightness-110 transition sheen"
+            >
+              Start an Audit
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/app/lab"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg glass text-text hover:text-cyan hover:border-cyan/40 display text-sm font-medium transition"
+            >
+              <FlaskConical className="h-4 w-4" />
+              Explore Test Lab
+            </Link>
+          </div>
+
+          <div className="mt-6 text-[11px] mono text-muted/80">
+            Public keys only · Controlled fixtures · Evidence-tiered results
+          </div>
+
+          <div className="w-full max-w-5xl mt-14 text-left">
+            <div className="glass-elevated rounded-xl p-6 sm:p-8 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan to-transparent" />
+              <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-border/40 gap-4">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <span className="px-2.5 py-1 rounded bg-surface-container border border-border/40 mono text-xs text-cyan font-semibold tracking-wide">
+                    DECOMPOSITION: n = p × q
+                  </span>
+                  <span className="mono text-[11px] text-muted hidden sm:inline">| Modulus audit probe</span>
+                </div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-low border border-cyan/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan shadow-[0_0_6px_#22d3ee]" />
+                  <span className="mono text-[11px] text-cyan font-medium">Budgeted ECM · No absolute SECURE</span>
+                </div>
+              </div>
+
+              <div className="mt-6 space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <span className="mono text-[11px] text-muted uppercase tracking-wider">
+                    Public modulus (n) · educational profile
+                  </span>
+                  <span className="mono text-[11px] text-primary">e = 65537 (0x10001)</span>
+                </div>
+                <div className="p-3.5 rounded-lg bg-bg/90 border border-border/40 mono text-xs text-muted break-all leading-relaxed">
+                  <span className="text-cyan">0xCBF1E5F8</span>
+                  <span>…truncated…</span>
+                  <span className="text-cyan">44E2E8E</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                {[
+                  { label: "Evidence tiers", value: "FACTOR / SUSPICIOUS / INCONCLUSIVE", hint: "Never “SECURE”" },
+                  { label: "Probe method", value: "Lenstra ECM", hint: "Budgeted factorization" },
+                  { label: "Input scope", value: "Public keys only", hint: "PEM or n + e" },
+                  { label: "Test Lab", value: "Controlled fixtures", hint: "No external targets" },
+                ].map((m) => (
+                  <div
+                    key={m.label}
+                    className="p-4 rounded-lg bg-surface-container/60 border border-border/40 hover:border-cyan/40 transition-colors"
+                  >
+                    <div className="mono text-[11px] text-muted mb-1.5">{m.label}</div>
+                    <div className="mono text-sm font-semibold text-text">{m.value}</div>
+                    <div className="mt-3 pt-2.5 border-t border-border/30 mono text-[11px] text-primary">{m.hint}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full max-w-5xl mt-14 grid grid-cols-2 md:grid-cols-4 gap-6 py-8 px-4 border-y border-border/40 glass rounded-xl">
+            {[
+              { v: "ECM", l: "Lenstra probe", s: "Budgeted curves" },
+              { v: "Evidence", l: "Tiered states", s: "Factor / Suspicious / Inconclusive" },
+              { v: "Lab", l: "Fixtures only", s: "Educational demos" },
+              { v: "Team Aegis", l: "Bennett University", s: "Modern Cryptography" },
+            ].map((x) => (
+              <div key={x.l} className="flex flex-col items-center text-center">
+                <div className="display text-2xl font-bold tracking-tight">{x.v}</div>
+                <div className="text-xs text-muted mt-1">{x.l}</div>
+                <div className="mono text-[10px] text-outline mt-0.5">{x.s}</div>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
     </div>
   );

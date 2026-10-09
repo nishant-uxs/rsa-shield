@@ -39,7 +39,11 @@ export function ReportsPage() {
 
   return (
     <>
-      <Topbar title="Report Center" subtitle="Evidence-backed JSON audit reports" />
+      <Topbar
+        title="Report Center"
+        subtitle="Evidence-backed JSON audit reports"
+        breadcrumb="Cryptanalysis Engine / Report Center"
+      />
       <div className="p-6 space-y-4">
         {loading ? <LoadingState /> : null}
         {error ? <ErrorState message={error} /> : null}

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>RSA-SHIELD — Attack &amp; Factorization Test Lab</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Sora:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-surface": "#e1e2eb",
+            "on-primary-fixed-variant": "#004e5a",
+            "error-container": "#93000a",
+            "on-primary-fixed": "#001f25",
+            "inverse-surface": "#e1e2eb",
+            "on-error": "#690005",
+            "tertiary": "#ffd6a7",
+            "secondary-fixed-dim": "#cebdff",
+            "primary-fixed-dim": "#2fd9f4",
+            "on-background": "#e1e2eb",
+            "primary-fixed": "#a2eeff",
+            "outline": "#859397",
+            "inverse-primary": "#006877",
+            "tertiary-fixed-dim": "#ffb95f",
+            "on-secondary-container": "#bea8ff",
+            "surface-container-low": "#191c22",
+            "surface-container-high": "#272a31",
+            "on-secondary-fixed-variant": "#4f319c",
+            "on-secondary": "#381385",
+            "on-primary-container": "#005763",
+            "on-primary": "#00363e",
+            "surface-variant": "#32353c",
+            "surface-container-lowest": "#0b0e14",
+            "on-tertiary-container": "#704500",
+            "on-surface-variant": "#bbc9cd",
+            "surface-bright": "#363940",
+            "background": "#10131a",
+            "tertiary-container": "#ffb147",
+            "surface-tint": "#2fd9f4",
+            "secondary-fixed": "#e8ddff",
+            "secondary-container": "#4f319c",
+            "primary": "#8aebff",
+            "tertiary-fixed": "#ffddb8",
+            "primary-container": "#22d3ee",
+            "error": "#ffb4ab",
+            "on-tertiary": "#472a00",
+            "surface-container": "#1d2026",
+            "surface-container-highest": "#32353c",
+            "secondary": "#cebdff",
+            "surface": "#10131a",
+            "on-error-container": "#ffdad6",
+            "surface-dim": "#10131a",
+            "on-tertiary-fixed": "#2a1700",
+            "on-secondary-fixed": "#21005e",
+            "on-tertiary-fixed-variant": "#653e00",
+            "inverse-on-surface": "#2e3037",
+            "outline-variant": "#3c494c"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2.5rem",
+            "margin": "2rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Sora"],
+            "body-lg": ["Sora"],
+            "label-md": ["JetBrains Mono"],
+            "label-lg": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk"],
+            "body-md": ["Sora"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-md": ["Space Grotesk"],
+            "headline-lg": ["Space Grotesk"],
+            "headline-sm": ["Space Grotesk"]
+          },
+          "fontSize": {
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "headline-xl": ["36px", { "lineHeight": "44px", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "fontWeight": "600" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #0b0e14;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #272a31;
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #3c494c;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased flex min-h-screen selection:bg-primary selection:text-on-primary">
+<!-- SHARED COMPONENT: SideNavBar (Fixed Left Rail) -->
+<aside class="fixed left-0 top-0 h-screen w-64 z-40 flex flex-col justify-between p-4 border-r border-outline-variant bg-surface-container-lowest">
+<!-- Header Block -->
+<div class="flex flex-col gap-5">
+<div class="flex items-center gap-3 px-1 pt-1">
+<div class="w-9 h-9 rounded-lg bg-surface-container border border-outline-variant flex items-center justify-center text-primary shadow-inner">
+<span class="material-symbols-outlined text-primary text-xl">shield</span>
+</div>
+<div class="flex flex-col">
+<span class="text-headline-sm font-headline-sm tracking-tight font-semibold text-primary">RSA-SHIELD</span>
+<span class="text-label-sm font-label-sm text-outline">Engine v4.12.0 • Active</span>
+</div>
+</div>
+<!-- Ingest Action -->
+<button class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-surface-container border border-outline-variant text-on-surface text-label-md font-label-md hover:bg-surface-container-high transition-colors duration-150 cursor-pointer">
+<span class="material-symbols-outlined text-primary text-sm">key_vertical</span>
+<span>Ingest PEM / Keys</span>
+</button>
+<!-- Primary Navigation Tabs -->
+<nav class="flex flex-col gap-1">
+<!-- Dashboard -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150 cursor-pointer" href="#">
+<span class="material-symbols-outlined text-lg">space_dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- RSA Auditor -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150 cursor-pointer" href="#">
+<span class="material-symbols-outlined text-lg">enhanced_encryption</span>
+<span>RSA Auditor</span>
+</a>
+<!-- Key Inventory -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150 cursor-pointer" href="#">
+<span class="material-symbols-outlined text-lg">vpn_key</span>
+<span>Key Inventory</span>
+</a>
+<!-- ECM Analysis -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150 cursor-pointer" href="#">
+<span class="material-symbols-outlined text-lg">grain</span>
+<span>ECM Analysis</span>
+</a>
+<!-- Test Lab (ACTIVE TAB: Strictly mapped to requested destination) -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-container-high text-primary font-label-md text-label-md border-l-2 border-primary cursor-pointer" href="#">
+<span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings: 'FILL' 1;">science</span>
+<span class="font-semibold">Test Lab</span>
+</a>
+<!-- Report Center -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150 cursor-pointer" href="#">
+<span class="material-symbols-outlined text-lg">assignment</span>
+<span>Report Center</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Footer Navigation -->
+<div class="flex flex-col gap-1 pt-4 border-t border-outline-variant">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150 cursor-pointer" href="#">
+<span class="material-symbols-outlined text-lg">dns</span>
+<span>Engine Telemetry</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container hover:text-on-surface transition-colors duration-150 cursor-pointer" href="#">
+<span class="material-symbols-outlined text-lg">settings</span>
+<span>System Settings</span>
+</a>
+<!-- Memory Sandbox Status Pill -->
+<div class="mt-2 p-2.5 rounded-lg bg-surface-container-low border border-outline-variant/60 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="text-label-sm font-label-sm text-outline">Sandbox Buffer</span>
+</div>
+<span class="text-label-sm font-label-sm text-primary font-semibold">128 MB Locked</span>
+</div>
+</div>
+</aside>
+<!-- Main Canvas Wrapper -->
+<div class="ml-64 flex-1 flex flex-col min-w-0 bg-background">
+<!-- SHARED COMPONENT: TopNavBar -->
+<header class="sticky top-0 z-30 flex items-center justify-between px-6 h-16 w-full border-b border-outline-variant bg-surface-container-lowest">
+<!-- Search & Engine Cluster -->
+<div class="flex items-center gap-5">
+<div class="relative w-72">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-lg pointer-events-none">search</span>
+<input class="w-full pl-9 pr-3 py-1.5 rounded-lg bg-surface-container-low border border-outline-variant text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container transition-all" placeholder="Filter synthetic vectors or primes..." type="text"/>
+</div>
+<div class="hidden xl:flex items-center gap-4 text-label-md font-label-md">
+<span class="text-on-surface-variant flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+            Cluster US-East-01
+          </span>
+<span class="text-primary flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+            Core Engine: Online
+          </span>
+</div>
+</div>
+<!-- Action Cluster -->
+<div class="flex items-center gap-3">
+<button class="px-3 py-1.5 rounded-lg border border-outline-variant text-on-surface hover:bg-surface-container text-label-md font-label-md transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">troubleshoot</span>
+<span>Quick Inspect</span>
+</button>
+<button class="px-3.5 py-1.5 rounded-lg bg-primary-container text-on-primary font-semibold hover:opacity-90 text-label-md font-label-md transition-all shadow-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">play_circle</span>
+<span>Run Batch Audit</span>
+</button>
+<div class="h-5 w-px bg-outline-variant mx-1"></div>
+<button class="p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-lg">notifications</span>
+</button>
+<button class="p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-lg">terminal</span>
+</button>
+<button class="p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-lg">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full border border-outline-variant bg-surface-container flex items-center justify-center text-primary font-label-md text-xs font-semibold ml-1">
+          SEC
+        </div>
+</div>
+</header>
+<!-- Page Content Scrollable Canvas -->
+<main class="p-8 flex flex-col gap-6 custom-scrollbar">
+<!-- Safety & Compliance Airgap Banner -->
+<section class="rounded-xl border border-primary/20 bg-surface-container-low/80 backdrop-blur-md p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-[0_4px_24px_-4px_rgba(34,211,238,0.06)]">
+<div class="flex items-start gap-3">
+<div class="w-9 h-9 rounded-lg bg-surface-container border border-primary/40 text-primary flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-primary text-xl">gavel</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="text-label-md font-label-md text-primary font-semibold tracking-wide">SANDBOX ISOLATED (GMP 6.3)</span>
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-primary-container/10 border border-primary/30 text-primary">AIRGAP VERIFIED</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">
+              Controlled Educational Fixtures Only — Sandbox Environment. Never targets external systems or live PKI infrastructure. All modular arithmetic routines execute in local memory runtime.
+            </p>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0 self-end lg:self-center">
+<span class="text-label-sm font-label-sm text-outline flex items-center gap-1.5">
+<span class="material-symbols-outlined text-xs text-primary">lock</span> Zero Socket Bindings
+          </span>
+<div class="h-4 w-px bg-outline-variant"></div>
+<span class="text-label-sm font-label-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">verified</span> Deterministic Seed
+          </span>
+</div>
+</section>
+<!-- Header Area -->
+<section class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-primary mb-1">
+<span class="material-symbols-outlined text-xs">biotech</span>
+<span>MATHEMATICAL ALGEBRAIC RECONNAISSANCE</span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-on-surface tracking-tight">Attack &amp; Factorization Test Lab</h1>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">
+            Evaluate cryptographic attack surfaces against synthetic and vulnerable key fixtures in a zero-network sandbox.
+          </p>
+</div>
+<div class="flex items-center gap-3 shrink-0">
+<button class="px-3.5 py-2 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-container text-on-surface text-label-md font-label-md transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-base">restart_alt</span>
+<span>Reset Fixture Suite</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-surface-container-high border border-outline-variant hover:border-primary/50 text-on-surface text-label-md font-label-md transition-all flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-primary text-base">download_for_offline</span>
+<span>Export Lab Benchmark Dossier</span>
+</button>
+</div>
+</section>
+<!-- Quick Stats Bar -->
+<section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/70 flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary border border-outline-variant">
+<span class="material-symbols-outlined text-xl">vpn_key</span>
+</div>
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-outline">Loaded Targets</span>
+<span class="text-headline-sm font-headline-sm text-on-surface font-semibold">5 Active Fixtures</span>
+</div>
+</div>
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/70 flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary-fixed-dim border border-outline-variant">
+<span class="material-symbols-outlined text-xl">wifi_off</span>
+</div>
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-outline">External Network Calls</span>
+<span class="text-headline-sm font-headline-sm text-on-surface font-semibold">0 Calls (Airgapped)</span>
+</div>
+</div>
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/70 flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary border border-outline-variant">
+<span class="material-symbols-outlined text-xl">speed</span>
+</div>
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-outline">Compute Benchmark</span>
+<span class="text-headline-sm font-headline-sm text-on-surface font-semibold">1.2ms Avg Execution</span>
+</div>
+</div>
+<div class="p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/70 flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary border border-outline-variant">
+<span class="material-symbols-outlined text-xl">verified_user</span>
+</div>
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-outline">Mathematical Engine</span>
+<span class="text-headline-sm font-headline-sm text-on-surface font-semibold">FIPS 140-3 Compliant</span>
+</div>
+</div>
+</section>
+<!-- Interactive Test Fixture Grid (5 requested fixtures) -->
+<section class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Target Test Fixtures</h2>
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded-full bg-surface-container-high border border-outline-variant text-outline">5 Vectors Configured</span>
+</div>
+<div class="text-label-sm font-label-sm text-outline flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+            GMP Lenstra ECM • Continued Fractions • Sieve Cores Ready
+          </div>
+</div>
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+<!-- Fixture 1: Intentionally Weak RSA ECM Demo -->
+<article class="p-5 rounded-xl bg-surface-container-low/90 border border-outline-variant hover:border-secondary/40 transition-all flex flex-col justify-between gap-4 relative overflow-hidden group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-error to-secondary-container"></div>
+<div class="flex flex-col gap-3">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<div class="flex flex-wrap gap-2">
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-error-container/20 border border-error/30 text-error">
+                    VULNERABILITY: SMOOTH ORDER (p-1 / q-1)
+                  </span>
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant text-on-surface-variant">
+                    ECM B1 Bound: 10^4
+                  </span>
+</div>
+<span class="text-label-sm font-label-sm text-outline">FIX-01</span>
+</div>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Intentionally Weak RSA ECM Demo</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                  RSA modulus constructed with primes sharing small B-smooth factors vulnerable to Lenstra Elliptic Curve Method factorization in sub-second cycles.
+                </p>
+</div>
+<!-- Key Specs & Modulus -->
+<div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/60 flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline">Key Specs:</span>
+<span class="text-on-surface">N = 1024-bit (p, q ~512-bit, smooth)</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline">Modulus preview:</span>
+<span class="text-primary font-mono select-all">0xDE4F9A...B301</span>
+</div>
+</div>
+<!-- Expected Result Hint -->
+<div class="p-2.5 rounded-lg bg-surface-container/60 border border-outline-variant/40 flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-base shrink-0 mt-0.5">lightbulb</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">
+<strong class="text-secondary font-medium">Expected:</strong> Fast factorization via Lenstra ECM within &lt; 450ms. Factor p extracted, private exponent reconstructed.
+                </p>
+</div>
+</div>
+<!-- Action Button (Violet Action per prompt) -->
+<div class="pt-2 flex items-center justify-between border-t border-outline-variant/40">
+<span class="text-label-sm font-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">memory</span> RAM: 4.8 MB
+              </span>
+<button class="px-4 py-2 rounded-lg bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 text-label-md font-label-md font-semibold transition-all flex items-center gap-2 border border-secondary/30 shadow-sm cursor-pointer">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Run Fixture Audit</span>
+</button>
+</div>
+</article>
+<!-- Fixture 2: Small-Factor Demo Key (Wiener / Small d) -->
+<article class="p-5 rounded-xl bg-surface-container-low/90 border border-outline-variant hover:border-secondary/40 transition-all flex flex-col justify-between gap-4 relative overflow-hidden group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-tertiary-container to-secondary-container"></div>
+<div class="flex flex-col gap-3">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<div class="flex flex-wrap gap-2">
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-tertiary-container/20 border border-tertiary/30 text-tertiary">
+                    VULNERABILITY: SMALL SECRET EXPONENT (d &lt; 1/3 N^(1/4))
+                  </span>
+</div>
+<span class="text-label-sm font-label-sm text-outline">FIX-02</span>
+</div>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Small-Factor Demo Key (Wiener / Small d)</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                  Vulnerable public exponent e with excessively small private exponent d, allowing continued fraction expansion to recover secret key in polynomial time.
+                </p>
+</div>
+<!-- Key Specs & Modulus -->
+<div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/60 flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline">Key Specs:</span>
+<span class="text-on-surface">N = 2048-bit, e = 0x10001 (oversized), d &lt; 280-bit</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline">Attack Vector:</span>
+<span class="text-secondary font-mono">Continued Fractions (k / d)</span>
+</div>
+</div>
+<!-- Expected Result Hint -->
+<div class="p-2.5 rounded-lg bg-surface-container/60 border border-outline-variant/40 flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-base shrink-0 mt-0.5">lightbulb</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">
+<strong class="text-secondary font-medium">Expected:</strong> Wiener continued fraction attack will successfully derive private key d without factoring N directly.
+                </p>
+</div>
+</div>
+<!-- Action Button -->
+<div class="pt-2 flex items-center justify-between border-t border-outline-variant/40">
+<span class="text-label-sm font-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">functions</span> Convergents: 34
+              </span>
+<button class="px-4 py-2 rounded-lg bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 text-label-md font-label-md font-semibold transition-all flex items-center gap-2 border border-secondary/30 shadow-sm cursor-pointer">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Run Fixture Audit</span>
+</button>
+</div>
+</article>
+<!-- Fixture 3: Normal Demonstration Key (Secure Baseline) -->
+<article class="p-5 rounded-xl bg-surface-container-low/90 border border-outline-variant hover:border-primary/40 transition-all flex flex-col justify-between gap-4 relative overflow-hidden group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary to-primary-container"></div>
+<div class="flex flex-col gap-3">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<div class="flex flex-wrap gap-2">
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-primary-container/20 border border-primary/30 text-primary">
+                    BASELINE: HARDENED 4096-BIT RSA
+                  </span>
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant text-on-surface-variant">
+                    CNSA 2.0 Compliant
+                  </span>
+</div>
+<span class="text-label-sm font-label-sm text-outline">FIX-03</span>
+</div>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Normal Demonstration Key (Secure Baseline)</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                  Standard production-grade RSA-4096 modulus generated via cryptographically secure RNG with verified large prime gaps (|p - q| &gt; 2^100) and standard Fermat resistance.
+                </p>
+</div>
+<!-- Key Specs & Modulus -->
+<div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/60 flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline">Key Specs:</span>
+<span class="text-on-surface">N = 4096-bit, e = 65537, Entropy: 0.9998 bits/bit</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline">Prime Spacing:</span>
+<span class="text-primary font-mono">Verified Safe Gap &gt; 2^100</span>
+</div>
+</div>
+<!-- Expected Result Hint -->
+<div class="p-2.5 rounded-lg bg-surface-container/60 border border-outline-variant/40 flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-base shrink-0 mt-0.5">lightbulb</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">
+<strong class="text-secondary font-medium">Expected:</strong> All algebraic attacks (Batch GCD, Fermat near-prime, Wiener, ECM B1=10^8) fail cleanly with 0 factor leakage.
+                </p>
+</div>
+</div>
+<!-- Action Button -->
+<div class="pt-2 flex items-center justify-between border-t border-outline-variant/40">
+<span class="text-label-sm font-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">shield</span> Security Level: 152-bit Eq.
+              </span>
+<button class="px-4 py-2 rounded-lg bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 text-label-md font-label-md font-semibold transition-all flex items-center gap-2 border border-secondary/30 shadow-sm cursor-pointer">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Run Fixture Audit</span>
+</button>
+</div>
+</article>
+<!-- Fixture 4: Legacy 1024-Bit Key (NIST Deprecated) -->
+<article class="p-5 rounded-xl bg-surface-container-low/90 border border-outline-variant hover:border-secondary/40 transition-all flex flex-col justify-between gap-4 relative overflow-hidden group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-error-container to-outline"></div>
+<div class="flex flex-col gap-3">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<div class="flex flex-wrap gap-2">
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-error/10 border border-error/30 text-error">
+                    DEPRECATED: 1024-BIT MODULUS
+                  </span>
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant text-on-surface-variant">
+                    NIST SP 800-131A Disallowed
+                  </span>
+</div>
+<span class="text-label-sm font-label-sm text-outline">FIX-04</span>
+</div>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Legacy 1024-Bit Key (NIST Deprecated)</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                  Legacy RSA modulus within reach of General Number Field Sieve (GNFS) distributed factoring. Demonstrates time-to-factor risk scoring.
+                </p>
+</div>
+<!-- Key Specs & Modulus -->
+<div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/60 flex flex-col gap-1.5">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline">Key Specs:</span>
+<span class="text-on-surface">N = 1024-bit standard prime, e = 65537</span>
+</div>
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-outline">GNFS Matrix Cost:</span>
+<span class="text-error font-mono">~3.5 Core-Months (Est.)</span>
+</div>
+</div>
+<!-- Expected Result Hint -->
+<div class="p-2.5 rounded-lg bg-surface-container/60 border border-outline-variant/40 flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-base shrink-0 mt-0.5">lightbulb</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">
+<strong class="text-secondary font-medium">Expected:</strong> Fails compliance audit immediately. Estimated GNFS sieve effort: ~3.5 core-months; flagged for urgent key retirement.
+                </p>
+</div>
+</div>
+<!-- Action Button -->
+<div class="pt-2 flex items-center justify-between border-t border-outline-variant/40">
+<span class="text-label-sm font-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">crisis_alert</span> Retirement Action: Immediate
+              </span>
+<button class="px-4 py-2 rounded-lg bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 text-label-md font-label-md font-semibold transition-all flex items-center gap-2 border border-secondary/30 shadow-sm cursor-pointer">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Run Fixture Audit</span>
+</button>
+</div>
+</article>
+<!-- Fixture 5: Malformed PEM (Parsing & ASN.1 Error) -->
+<article class="p-5 rounded-xl bg-surface-container-low/90 border border-outline-variant hover:border-secondary/40 transition-all flex flex-col justify-between gap-4 relative overflow-hidden group xl:col-span-2">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-tertiary to-error"></div>
+<div class="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+<div class="flex flex-col gap-3 flex-1">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<div class="flex flex-wrap gap-2">
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-tertiary-container/20 border border-tertiary/30 text-tertiary">
+                      SYNTAX: INVALID ASN.1 DER STRUCTURE
+                    </span>
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant text-on-surface-variant">
+                      Header Tampered
+                    </span>
+</div>
+<span class="text-label-sm font-label-sm text-outline">FIX-05</span>
+</div>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Malformed PEM (Parsing &amp; ASN.1 Error)</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                    Corrupted PKCS#1 PEM container with truncated Base64 byte length, illegal bit string padding, or tampered cryptographic sequence headers.
+                  </p>
+</div>
+<!-- Key Specs & Modulus -->
+<div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="text-label-sm font-label-sm text-outline">
+                    Key Specs: <span class="text-on-surface">Type: Malformed RSAPrivateKey block, corrupted headers</span>
+</div>
+<div class="text-label-sm font-label-sm text-outline">
+                    Parser Target: <span class="text-primary font-mono">RFC 5208 / ASN.1 Strict</span>
+</div>
+</div>
+<!-- Expected Result Hint -->
+<div class="p-2.5 rounded-lg bg-surface-container/60 border border-outline-variant/40 flex items-start gap-2">
+<span class="material-symbols-outlined text-secondary text-base shrink-0 mt-0.5">lightbulb</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">
+<strong class="text-secondary font-medium">Expected:</strong> Graceful ASN.1 parser exception; zero crash in worker thread, immediate rejection with cryptographic sanitization telemetry.
+                  </p>
+</div>
+</div>
+<!-- Action & Side Inspection Callout -->
+<div class="flex flex-col justify-between shrink-0 lg:w-64 pt-2 lg:pt-0 lg:border-l lg:border-outline-variant/50 lg:pl-5 gap-4">
+<div class="flex flex-col gap-1.5 text-label-sm font-label-sm">
+<span class="text-outline">Failure Mode:</span>
+<span class="text-tertiary">Invalid Tag Length Encoding</span>
+<span class="text-outline mt-1">Fuzzing Cycle:</span>
+<span class="text-on-surface font-mono">Iteration #92,401</span>
+</div>
+<button class="w-full px-4 py-2.5 rounded-lg bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 text-label-md font-label-md font-semibold transition-all flex items-center justify-center gap-2 border border-secondary/30 shadow-sm cursor-pointer">
+<span class="material-symbols-outlined text-sm">play_arrow</span>
+<span>Run Fixture Audit</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- Bottom Section: Live Fixture Terminal / Execution Trace Console -->
+<section class="rounded-xl border border-outline-variant bg-surface-container-lowest overflow-hidden shadow-2xl flex flex-col">
+<!-- Terminal Header Toolbar -->
+<div class="px-4 py-3 bg-surface-container-low border-b border-outline-variant flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-full bg-error-container"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+</div>
+<div class="h-4 w-px bg-outline-variant"></div>
+<span class="text-label-md font-label-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base">terminal</span>
+<span>Live Fixture Terminal &amp; Mathematical Trace Console</span>
+</span>
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded bg-surface-container-high text-primary border border-outline-variant">
+              Coq / Lean Proof Engine Active
+            </span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface text-label-sm font-label-sm transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+<span>Copy Trace</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container text-on-surface-variant hover:text-on-surface text-label-sm font-label-sm transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">clear_all</span>
+<span>Clear</span>
+</button>
+</div>
+</div>
+<!-- Terminal Output Window -->
+<div class="p-5 font-mono text-label-sm font-label-sm leading-relaxed overflow-x-auto text-on-surface-variant custom-scrollbar max-h-96 flex flex-col gap-2">
+<div class="flex items-center gap-3 text-outline">
+<span>[INIT]</span>
+<span>Allocating isolated GMP scratchpad: 0x7ffd09b40000 - 0x7ffd11b40000 (128 MB)</span>
+</div>
+<div class="flex items-center gap-3 text-outline">
+<span>[SEED]</span>
+<span>Deterministic state RNG initialised with SHA-512(0x5253412d534849454c44)</span>
+</div>
+<div class="flex items-start gap-3 mt-1 text-primary">
+<span class="shrink-0">[DISPATCH]</span>
+<span>Executing automated benchmark suite on Fixture FIX-01 (Intentionally Weak RSA ECM Demo)...</span>
+</div>
+<!-- Trace Steps -->
+<div class="pl-6 border-l border-outline-variant/60 flex flex-col gap-1.5 my-1">
+<div class="text-on-surface">
+              &gt; Modulus N = 0xDE4F9A279B62D2409...B301 (Bit Length: 1024)
+            </div>
+<div class="text-on-surface-variant">
+              &gt; Lenstra ECM Stage 1: Curve selection Weierstrass y^2 = x^3 + ax + b (mod N)
+            </div>
+<div class="text-on-surface-variant">
+              &gt; Setting B1 bound = 10,000 | Computing scalar multiplication k * P over Montgomery form
+            </div>
+<div class="text-primary-fixed-dim">
+              &gt; Factor candidate extracted via GCD: gcd(x_k - x_P, N) = 0xF19284C2... (512-bit prime)
+            </div>
+<div class="text-secondary">
+              &gt; Reconstructing conjugate factor q = N / p: VERIFIED PRIME.
+            </div>
+<div class="text-tertiary">
+              &gt; Coq Verification Assertion: Theorem rsa_smooth_factorable_proof : complete.
+            </div>
+<div class="text-primary font-semibold">
+              &gt; [SUCCESS] Attack vector validated. Factorization wall clock: 382.41 ms. (Expected: &lt; 450ms)
+            </div>
+</div>
+<div class="flex items-start gap-3 mt-1 text-primary">
+<span class="shrink-0">[DISPATCH]</span>
+<span>Evaluating Fixture FIX-05 (Malformed PEM - Syntax &amp; Parsing Integrity)...</span>
+</div>
+<div class="pl-6 border-l border-outline-variant/60 flex flex-col gap-1.5 my-1">
+<div class="text-on-surface-variant">
+              &gt; Feeding raw input to ASN1_StrictReader: Tag 0x30 (SEQUENCE) Expected length: 1192, Read: 844
+            </div>
+<div class="text-error font-medium">
+              &gt; Parser Trap Caught: ASN1_ERR_UNEXPECTED_EOF (ErrCode: 0x80093102) at byte offset 0x034C
+            </div>
+<div class="text-on-surface">
+              &gt; Memory Sanitization: 0 buffer overruns detected. Thread boundary cleanly retained.
+            </div>
+<div class="text-primary font-semibold">
+              &gt; [PASS] Exception containment verified. Parser rejected invalid sequence in 0.04 ms.
+            </div>
+</div>
+<!-- Active Prompt Line -->
+<div class="flex items-center gap-2 text-primary mt-2">
+<span class="text-secondary font-bold">rsa-shield@sandbox:~$</span>
+<span class="w-2 h-4 bg-primary-container inline-block animate-pulse"></span>
+<span class="text-outline">Ready for operator command or single fixture trigger...</span>
+</div>
+</div>
+<!-- Terminal Status Footer -->
+<div class="px-4 py-2 bg-surface-container-low border-t border-outline-variant flex flex-wrap items-center justify-between text-label-sm font-label-sm text-outline">
+<div class="flex items-center gap-4">
+<span>Workers: 8 Cores (AVX-512)</span>
+<span>Entropy Pool: Hardware TRNG</span>
+<span>Zero Remote Outbound I/O</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="text-on-surface">Local Runtime Deterministic</span>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

@@ -12,7 +12,11 @@ const STEPS = [
 export function EcmPage() {
   return (
     <>
-      <Topbar title="ECM Analysis" subtitle="Lenstra Elliptic Curve Method as an auditing probe" />
+      <Topbar
+        title="ECM Analysis"
+        subtitle="Lenstra Elliptic Curve Method as an auditing probe"
+        breadcrumb="Cryptanalysis Engine / ECM Analysis"
+      />
       <div className="p-6 grid lg:grid-cols-2 gap-4">
         <Panel title="Conceptual workflow">
           <ol className="space-y-3">
@@ -30,16 +34,20 @@ export function EcmPage() {
         <Panel title="Interpretation rules">
           <ul className="text-sm text-muted space-y-2 leading-relaxed">
             <li>
-              <span className="text-crit font-medium">FACTOR_FOUND</span> — non-trivial factor is mathematical evidence of weakness.
+              <span className="text-crit font-medium mono text-xs">FACTOR_FOUND</span> — non-trivial factor is
+              mathematical evidence of weakness.
             </li>
             <li>
-              <span className="text-amber font-medium">SUSPICIOUS</span> — heuristic warnings only (e.g., legacy size).
+              <span className="text-amber font-medium mono text-xs">SUSPICIOUS</span> — heuristic warnings only (e.g.,
+              legacy size).
             </li>
             <li>
-              <span className="text-violet font-medium">INCONCLUSIVE</span> — no factor within configured budget.
+              <span className="text-violet font-medium mono text-xs">INCONCLUSIVE</span> — no factor within configured
+              budget.
             </li>
             <li>
-              <span className="text-ok font-medium">NO_WEAKNESS_DETECTED_BY_CONFIGURED_CHECKS</span> — configured checks only; not a proof.
+              <span className="text-ok font-medium mono text-xs">NO_WEAKNESS_DETECTED_BY_CONFIGURED_CHECKS</span> —
+              configured checks only; not a proof.
             </li>
             <li className="text-amber">ECM does not instantly factor properly generated modern RSA keys.</li>
           </ul>
