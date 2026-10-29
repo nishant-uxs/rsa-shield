@@ -33,7 +33,8 @@ class RsaKey(Base):
     label: Mapped[str] = mapped_column(String(256), default="")
     algorithm: Mapped[str] = mapped_column(String(32), default="RSA")
     modulus_hex: Mapped[str] = mapped_column(Text)
-    exponent: Mapped[int] = mapped_column(Integer)
+    # String so Wiener-sized public exponents (>2^63) persist on SQLite.
+    exponent: Mapped[str] = mapped_column(String(2048))
     bit_length: Mapped[int] = mapped_column(Integer)
     fingerprint: Mapped[str] = mapped_column(String(128), index=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

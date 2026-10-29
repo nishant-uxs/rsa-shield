@@ -195,6 +195,14 @@ async def evaluation_corpus(size: int = Query(40, ge=12, le=120)):
     return run_mini_corpus_study(size=size)
 
 
+@router.get("/evaluation/batch-gcd-benchmark")
+async def evaluation_batch_gcd_benchmark():
+    """Benchmark comparing Naive Pairwise O(N^2) vs Bernstein Subquadratic O(N log^2 N) tree."""
+    from app.crypto.batch_gcd import benchmark_batch_gcd_scaling
+
+    return benchmark_batch_gcd_scaling()
+
+
 @router.get("/evaluation/research-bundle")
 async def evaluation_research_bundle(
     ecm_timeout_ms: int = Query(3000, ge=500, le=30_000),

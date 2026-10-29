@@ -12,7 +12,7 @@ from typing import Any, Callable
 from Crypto.Util.number import getPrime, isPrime
 
 from app.crypto.analyzer import analyze_rsa
-from app.crypto.batch_gcd import batch_gcd
+from app.crypto.batch_gcd import batch_gcd, benchmark_batch_gcd_scaling
 from app.crypto.fermat import fermat_factor
 from app.crypto.parser import parse_pem
 from app.crypto.roca import roca_fingerprint
@@ -433,4 +433,5 @@ def run_full_research_bundle(*, ecm_timeout_ms: int = 3000, corpus_size: int = 4
         "ablation": run_ablation(ecm_timeout_ms=ecm_timeout_ms),
         "configuration_comparison": run_configuration_comparison(ecm_timeout_ms=ecm_timeout_ms),
         "mini_corpus": run_mini_corpus_study(size=corpus_size),
+        "batch_gcd_scaling_benchmark": benchmark_batch_gcd_scaling([20, 50, 100, 200]),
     }

@@ -5,7 +5,6 @@ from __future__ import annotations
 from Crypto.PublicKey import RSA
 from Crypto.Util.number import getPrime, isPrime
 
-from app.crypto.wiener import generate_wiener_weak_key
 
 # Tiny factors — deterministic trial division finds these immediately.
 N_TINY = 101 * 1031  # 104131
@@ -16,10 +15,14 @@ P_WEAK = 100003
 Q_WEAK = 32416190071
 N_WEAK = P_WEAK * Q_WEAK
 
-# Balanced ~64-bit primes → short ECM budget typically INCONCLUSIVE (not a security proof).
-P_NORMAL = 9223372036854775783
-Q_NORMAL = 9223372036854775643
+# Distant ~64-bit primes. Gap is large enough that a 25k-step Fermat probe does not factor them.
+P_NORMAL = 14207201142986081273
+Q_NORMAL = 11399710733968215583
 N_NORMAL = P_NORMAL * Q_NORMAL
+
+# Fixed Wiener demo (small d). Exponent does not fit in a 64-bit int column.
+N_WIENER = 2481545804494113232096604789576025074500577845743602173217
+E_WIENER = 165107158544877572609780949974738783268249968586186155449
 
 
 def _pem_from_ne(n: int, e: int = E) -> str:
@@ -39,7 +42,7 @@ def _fermat_close_modulus(bits: int = 128) -> tuple[int, int, int]:
 def build_fixtures() -> list[dict]:
     legacy_pem = RSA.generate(1024).publickey().export_key("PEM").decode()
     n_fermat, _, _ = _fermat_close_modulus(128)
-    n_w, e_w, _, _, _ = generate_wiener_weak_key(256)
+    n_w, e_w = N_WIENER, E_WIENER
 
     return [
         {
@@ -85,12 +88,12 @@ def build_fixtures() -> list[dict]:
         {
             "id": "normal-demo",
             "name": "Normal demonstration RSA key",
-            "description": "Balanced primes. Short ECM budget typically yields INCONCLUSIVE — not a security proof.",
+            "description": "Balanced primes under 512 bits. Size heuristic marks SUSPICIOUS; a short ECM budget does not factor it and is not a security proof.",
             "category": "normal",
             "pem": _pem_from_ne(N_NORMAL),
             "n": str(N_NORMAL),
             "e": E,
-            "expected_hint": "INCONCLUSIVE",
+            "expected_hint": "SUSPICIOUS or INCONCLUSIVE",
         },
         {
             "id": "legacy-1024",

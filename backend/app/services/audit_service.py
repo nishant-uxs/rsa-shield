@@ -63,7 +63,7 @@ async def _persist_key(
         source=source,
         algorithm="RSA",
         modulus_hex=n_to_hex(n),
-        exponent=e,
+        exponent=str(e),
         bit_length=bit_length,
         fingerprint=fingerprint,
     )
@@ -81,7 +81,7 @@ def key_to_dict(key: RsaKey) -> dict[str, Any]:
         "source": key.source,
         "algorithm": key.algorithm,
         "bit_length": key.bit_length,
-        "exponent": key.exponent,
+        "exponent": int(key.exponent),
         "fingerprint": key.fingerprint,
         "modulus_preview": _modulus_preview(key.modulus_hex),
         "created_at": key.created_at,
@@ -134,7 +134,7 @@ async def create_and_run_audit(
     try:
         result = run_audit_pipeline(
             key.modulus_hex,
-            key.exponent,
+            int(key.exponent),
             run_ecm=run_ecm,
             timeout_ms=timeout_ms,
             curves=curves,
@@ -268,7 +268,7 @@ async def audit_to_out(db: AsyncSession, audit: Audit) -> dict[str, Any]:
         if isinstance(audit.ecm_config_json, dict)
         else None,
         "bit_length": key.bit_length if key else None,
-        "exponent": key.exponent if key else None,
+        "exponent": int(key.exponent) if key else None,
         "key_label": key.label if key else None,
         "created_at": audit.created_at,
         "completed_at": audit.completed_at,
@@ -352,6 +352,10 @@ async def dashboard_summary(db: AsyncSession) -> dict[str, Any]:
 async def create_report(db: AsyncSession, audit: Audit) -> Report:
     out = await audit_to_out(db, audit)
     key = await db.get(RsaKey, audit.key_id)
+    key_info = key_to_dict(key) if key else {}
+    created = key_info.get("created_at")
+    if hasattr(created, "isoformat"):
+        key_info["created_at"] = created.isoformat()
     content = {
         "branding": {"product": "RSA-SHIELD", "team": "Team Aegis", "institution": "Bennett University"},
         "executive_summary": {
@@ -359,7 +363,7 @@ async def create_report(db: AsyncSession, audit: Audit) -> Report:
             "factor_found": audit.factor_found,
             "interpretation": _interpret(audit.final_state),
         },
-        "key_information": key_to_dict(key) if key else {},
+        "key_information": key_info,
         "parameter_analysis": out.get("checks", []),
         "heuristic_warnings": out.get("warnings", []),
         "ecm_analysis": out.get("ecm"),
