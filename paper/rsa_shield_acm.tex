@@ -11,41 +11,17 @@
 \begin{document}
 \title{RSA-SHIELD: An Evidence-Tiered Auditing Framework for RSA Public-Key Infrastructure with Subquadratic Batch-GCD and Budgeted Multi-Probe Factorization}
 
-\author{Nishant Agarwal}
-\email{S24CSEU1512@bennett.edu.in}
+\author{Anonymous Author(s)}
 \affiliation{%
-  \institution{School of Computer Science Engineering and Technology, Bennett University}
-  \city{Greater Noida}
-  \state{Uttar Pradesh}
-  \country{India}
+  \institution{Department and Affiliation Omitted for Double-Blind Review}
+  \country{}
 }
 
-\author{Adarsh Agrahari}
-\email{S24CSEU1187@bennett.edu.in}
-\affiliation{%
-  \institution{School of Computer Science Engineering and Technology, Bennett University}
-  \city{Greater Noida}
-  \state{Uttar Pradesh}
-  \country{India}
-}
 
-\author{Shubh Jadiya}
-\email{S24CSEU0530@bennett.edu.in}
-\affiliation{%
-  \institution{School of Computer Science Engineering and Technology, Bennett University}
-  \city{Greater Noida}
-  \state{Uttar Pradesh}
-  \country{India}
-}
 
-\author{Dr. Sachin Choudhary}
-\email{sachin.choudhary@bennett.edu.in}
-\affiliation{%
-  \institution{School of Computer Science Engineering and Technology, Bennett University}
-  \city{Greater Noida}
-  \state{Uttar Pradesh}
-  \country{India}
-}
+
+
+
 
 \begin{abstract}
 Public-Key Infrastructure (PKI) based on the RSA cryptosystem remains ubiquitous across industrial control systems, legacy SCADA architectures, and embedded smart meters. Despite widespread assumptions of security, implementations frequently suffer from catastrophic structural vulnerabilities, including low-entropy pseudo-random number generator collisions, near-twin primes, low private exponents, and flawed hardware prime generation. Conventional vulnerability scanners present an epistemic hazard by issuing binary ``SECURE'' labels whenever standard tests fail to uncover a weakness. In this paper, we present \textbf{RSA-SHIELD}, a defensible, evidence-tiered auditing framework designed for zero-trust public-key assessment. RSA-SHIELD adheres to a strict \textit{Never-Claim-SECURE} classification policy that demarcates conclusive factor discovery, structural suspicion, and budget-exhausted inconclusiveness. To address the computational intractability of inventory-scale shared prime detection, we integrate Daniel J. Bernstein's subquadratic Product and Remainder Tree algorithm, reducing batch Greatest Common Divisor (GCD) audit complexity from $\mathcal{O}(N^2)$ to $\mathcal{O}(N \log^2 N)$. Furthermore, we orchestrate a resource-bounded multi-probe pipeline combining deterministic sanity checks, Fermat near-twin factorization, Wiener's continued-fraction low-exponent attack, ROCA statistical fingerprinting, and budgeted Lenstra Elliptic Curve Method (ECM) factorization. Experimental evaluation across synthetic corpora and scalable testbeds confirms that RSA-SHIELD achieves 100\% precision in weakness identification while delivering a $1.84\times$ speedup at $N=400$ moduli, demonstrating viable sub-second enterprise PKI sweeps. Finally, we map audited moduli against NIST FIPS 203/204 Post-Quantum Cryptography (PQC) transition timelines to guide legacy migration.

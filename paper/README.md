@@ -7,12 +7,15 @@ This directory contains the academic research paper for **RSA-SHIELD** in two st
 ## Paper Title
 > **RSA-SHIELD: An Evidence-Tiered Auditing Framework for RSA Public-Key Infrastructure with Subquadratic Batch-GCD and Budgeted Multi-Probe Factorization**
 
-### Authors & Affiliation
-- **Nishant Agarwal** (S24CSEU1512@bennett.edu.in)
-- **Adarsh Agrahari** (S24CSEU1187@bennett.edu.in)
-- **Shubh Jadiya** (S24CSEU0530@bennett.edu.in)
-- **Dr. Sachin Choudhary** (sachin.choudhary@bennett.edu.in)  
-*School of Computer Science Engineering and Technology, Bennett University, Greater Noida, India*
+### Authors & Affiliation (Double-Blind Review Status)
+> **Note for Peer Review Submission:** The `.tex` source files and compiled PDFs currently specify **Anonymous Author(s)** and omitted institutional affiliations to strictly adhere to double-blind peer-review guidelines.
+> 
+> *Original Author Registry (for Camera-Ready unmasking upon acceptance):*
+> - **Nishant Agarwal** (S24CSEU1512@bennett.edu.in)
+> - **Adarsh Agrahari** (S24CSEU1187@bennett.edu.in)
+> - **Shubh Jadiya** (S24CSEU0530@bennett.edu.in)
+> - **Dr. Sachin Choudhary** (sachin.choudhary@bennett.edu.in)  
+> *School of Computer Science Engineering and Technology, Bennett University, Greater Noida, India*
 
 ---
 
@@ -81,3 +84,4 @@ pdflatex rsa_shield_acm.tex
 
 ### Overleaf Import
 Upload `references.bib` together with either `rsa_shield_ieee.tex` or `rsa_shield_acm.tex`. Set the compiler engine to **pdfLaTeX**.
+
