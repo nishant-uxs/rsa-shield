@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 frontend/node_modules/
 backend/.venv/
@@ -16,6 +16,7 @@ backend/**/*.db
 backend/reports_out/
 *.pdf
 !presentation/*.pdf
+!paper/*.pdf
 
 # Env / secrets
 .env
@@ -38,4 +39,9 @@ presentation/*.toc
 presentation/*.snm
 presentation/compile*.txt
 presentation/test-tikz*
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
 .vercel
