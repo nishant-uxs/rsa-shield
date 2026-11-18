@@ -1,31 +1,10 @@
-# RSA-SHIELD — Overleaf Presentation
+# Live deck + Overleaf
 
-## Files
-| File | Use |
-|------|-----|
-| `RSA-SHIELD-overleaf.tex` | Upload / paste into Overleaf |
-| `RSA-SHIELD-overleaf.pdf` | Already compiled (10 pages) |
+This folder is served at http://127.0.0.1:5173/deck/
 
-## Overleaf (2 minutes)
-1. Go to [overleaf.com](https://www.overleaf.com) → **New Project** → **Blank Project**
-2. Open `main.tex`, delete everything, paste contents of `RSA-SHIELD-overleaf.tex`
-   - Or: **Upload** the `.tex` file and set it as the main document
-3. Menu → **Compiler: pdfLaTeX** → **Recompile**
-4. Download PDF
+For the clean conference Beamer talk, use the repo file:
 
-## What’s inside (10 pages)
-1. Cover  
-2. Problem + threat-flow diagram  
-3. Gap vs RSA-SHIELD + pipeline  
-4. Audit engine + lifecycle diagram  
-5. Lenstra ECM + conceptual workflow  
-6. System architecture  
-7. Analysis layers + audit scenario  
-8. Stack, features, evaluation  
-9. Limitations / responsible use  
-10. Future scope + closing  
+- `presentation/rsa_shield_beamer.tex` → upload to Overleaf (pdfLaTeX)
+- Compiled PDF: `presentation/rsa_shield_beamer.pdf`
 
-Diagrams are **TikZ Mermaid-style flowcharts**. Overleaf cannot run Mermaid.js; TikZ is the Overleaf-safe equivalent and looks clean.
-
-## Edit placeholders
-Replace `[TEAM NAME]`, `[MEMBER 1–4]`, `[MENTOR NAME]`, `[COLLEGE / UNIVERSITY]`, `[REPO]`, `[URL]`.
+Browser slides: `index.html` (arrows / Space).
