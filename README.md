@@ -75,12 +75,18 @@ cd backend
 
 ## Demo walkthrough (~3 min)
 
-1. Open landing → **Explore Test Lab**
-2. Run **Intentionally weak RSA (ECM demo)** → expect `FACTOR_FOUND`
+1. Open landing → **Sir Demo** (`/app/demo`) — preferred for faculty
+2. Run weak-ecm → fermat-close → wiener-small-d → normal-demo
 3. Open audit details → review evidence + timeline
-4. **Generate report** (JSON download)
-5. Run **Normal demonstration RSA key** with short budget → typically `INCONCLUSIVE`
-6. Emphasize: inconclusive ≠ secure
+4. Emphasize: inconclusive / no-weakness ≠ secure
+5. Optional: **Evaluation** page for paper tables; deck at `/deck/`
+
+## Research artifacts
+
+- IEEE paper: `paper/rsa_shield_ieee.pdf`
+- Overleaf Beamer: `presentation/rsa_shield_beamer.tex`
+- Team explainer: `docs/EXPLAIN_FOR_TEAM_AND_SIR.md`
+- Verify paper numbers: `.\scripts\verify_paper.ps1`
 
 ## Security considerations
 
