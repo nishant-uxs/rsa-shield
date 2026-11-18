@@ -1,55 +1,37 @@
-# RSA-SHIELD — Project Presentation
+# RSA-SHIELD — Research Presentation (Team Aegis)
 
-Premium cybersecurity product pitch deck for the college project **RSA-SHIELD: An Intelligent RSA Key Security Auditor for Legacy Critical Infrastructure**.
+Numbers-focused deck for team / faculty demos.
 
-## Open the deck
+## Open
 
-1. Open `presentation/index.html` in Chrome, Edge, or Firefox (double-click or drag into the browser).
-2. Navigate with:
-   - **← / →** or **Space**
-   - On-screen arrow buttons
-   - Swipe on touch devices
+1. **Overleaf / Beamer (best for sir):** upload `rsa_shield_beamer.tex` — see `OVERLEAF.md`
+2. **Beamer PDF:** `presentation/rsa_shield_beamer.pdf` (after `pdflatex`)
+3. **Browser deck:** open `presentation/index.html` (←/→ or Space)
+4. **Live with app:** http://127.0.0.1:5173/deck/index.html
+5. **PowerPoint:** `presentation/RSA_SHIELD_Research.pptx`
 
-## Customize placeholders
+## Regenerate PPTX
 
-Replace these tokens in `index.html` (cover + closing slides):
+```bash
+backend\.venv\Scripts\python.exe presentation\build_pptx.py
+```
 
-| Placeholder | Replace with |
-|---|---|
-| `[TEAM NAME]` | Your team name |
-| `[MEMBER 1]` … `[MEMBER 4]` | Team members |
-| `[MENTOR NAME]` | Faculty mentor |
-| `[COLLEGE / UNIVERSITY]` | Institution |
-| `github.com/[org]/rsa-shield` | Real repo URL |
-| `[DEMO URL]` | Live demo link |
+## Team
 
-## Design system
+- Team Aegis · Bennett University
+- Mentor: Dr. Sachin Choudhary
 
-- Background: near-black charcoal
-- Accents: electric cyan + violet
-- Status: amber (warning), red (critical), green (success)
-- Typography: Sora + JetBrains Mono
-- Diagrams: Mermaid (rendered in-browser, not shown as source)
+## Headline numbers (locked)
 
-## Slide map
+| Result | Value |
+|--------|--------|
+| Bake-off overconfidence | 0.0 vs badkeys 0.75 |
+| ROCA FP (legacy → calibrated) | 75% → 0.2% (n=500) |
+| Adaptive speedup | 1.511× at recall 1.0 |
+| CT tip moduli | 12,010 · GCD hits 0 |
 
-1. Cover  
-2. The Problem  
-3. Existing Gap  
-4. Solution Pipeline  
-5. Audit Engine Lifecycle  
-6. Lenstra ECM  
-7. Architecture  
-8. Analysis Layers  
-9. Audit Scenario + Dashboard Mock  
-10. Technology Stack  
-11. Key Features  
-12. Evaluation (no fabricated metrics)  
-13. Limitations & Responsible Use  
-14. Future Scope  
+## Sir demo
 
-## Notes for evaluators
+http://127.0.0.1:5173/app/demo
 
-- The deck does **not** claim invention of RSA or ECM.
-- Factorization success is framed only as **audit evidence**, not as a general break of modern RSA.
-- Benchmark charts are explicitly labeled **Prototype Benchmark — To Be Measured**.
+Explainer: `docs/EXPLAIN_FOR_TEAM_AND_SIR.md`

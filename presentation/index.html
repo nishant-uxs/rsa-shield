@@ -31,19 +31,19 @@
           <div class="meta-grid">
             <div class="meta-item">
               <label>Team</label>
-              <span>[TEAM NAME]</span>
+              <span>Team Aegis</span>
             </div>
             <div class="meta-item">
               <label>Mentor</label>
-              <span>[MENTOR NAME]</span>
+              <span>Dr. Sachin Choudhary</span>
             </div>
             <div class="meta-item">
-              <label>Members</label>
-              <span>[MEMBER 1] · [MEMBER 2]<br/>[MEMBER 3] · [MEMBER 4]</span>
+              <label>Focus</label>
+              <span>Evidence-correct auditing<br/>Measured research results</span>
             </div>
             <div class="meta-item">
               <label>Institution</label>
-              <span>[COLLEGE / UNIVERSITY]</span>
+              <span>Bennett University</span>
             </div>
           </div>
         </div>
@@ -456,35 +456,35 @@ flowchart TD
       </div>
     </section>
 
-    <!-- SLIDE 12 — EVALUATION -->
+    <!-- SLIDE 12 — EVALUATION (MEASURED) -->
     <section class="slide" data-slide="12">
       <header class="slide-header">
-        <p class="eyebrow">Evaluation Framework</p>
-        <h2 class="slide-title">How We Measure the System</h2>
-        <p class="slide-sub">Metrics define success criteria. Prototype measurements will be reported when collected — not invented.</p>
+        <p class="eyebrow">Measured Research Results</p>
+        <h2 class="slide-title">Frozen Numbers from Paper Dumps</h2>
+        <p class="slide-sub">Real measurements — not placeholders. Sources: bakeoff / roca_calibration / adaptive_ablation / ct_measurement.</p>
       </header>
       <div class="grid-2">
         <div class="panel" style="display:flex;flex-direction:column;gap:0.55rem">
-          <div class="metric-card"><div class="label">Keys successfully parsed</div><div class="value">Metric category — to be measured</div></div>
-          <div class="metric-card"><div class="label">Audit processing time</div><div class="value">Metric category — to be measured</div></div>
-          <div class="metric-card"><div class="label">ECM execution time</div><div class="value">Metric category — to be measured</div></div>
-          <div class="metric-card"><div class="label">Successful factor discovery on weak test keys</div><div class="value">Metric category — to be measured</div></div>
-          <div class="metric-card"><div class="label">False-positive rate for heuristic warnings</div><div class="value">Metric category — to be measured</div></div>
-          <div class="metric-card"><div class="label">Batch throughput · Resource utilization</div><div class="value">Metric category — to be measured</div></div>
+          <div class="metric-card"><div class="label">Bake-off overconfidence</div><div class="value">RSA-SHIELD 0.0 · badkeys 0.75</div></div>
+          <div class="metric-card"><div class="label">ROCA FP vs badkeys (n=500)</div><div class="value">Legacy 75% → Calibrated 0.2%</div></div>
+          <div class="metric-card"><div class="label">ROCA agreement after calibration</div><div class="value">99.8% (thr=0.99)</div></div>
+          <div class="metric-card"><div class="label">Adaptive mean wall time</div><div class="value">1473.92 → 975.75 ms (1.511×)</div></div>
+          <div class="metric-card"><div class="label">Adaptive factor recall</div><div class="value">1.0 preserved on Bench</div></div>
+          <div class="metric-card"><div class="label">CT tip · unique moduli</div><div class="value">12,010 · batch-GCD hits 0</div></div>
         </div>
         <div class="panel panel-glow" style="display:flex;flex-direction:column">
-          <p class="cmp-label good" style="margin-bottom:0.5rem">Benchmark Categories</p>
+          <p class="cmp-label good" style="margin-bottom:0.5rem">What the numbers mean</p>
           <div class="chart-bars">
-            <div class="chart-col"><div class="bar ghost" style="height:55%"></div><span>Parse success</span></div>
-            <div class="chart-col"><div class="bar ghost" style="height:70%"></div><span>Audit latency</span></div>
-            <div class="chart-col"><div class="bar ghost" style="height:85%"></div><span>ECM runtime</span></div>
-            <div class="chart-col"><div class="bar ghost" style="height:45%"></div><span>Weak-key detect</span></div>
-            <div class="chart-col"><div class="bar ghost" style="height:60%"></div><span>Heuristic FP</span></div>
-            <div class="chart-col"><div class="bar ghost" style="height:75%"></div><span>Batch / resources</span></div>
+            <div class="chart-col"><div class="bar" style="height:5%"></div><span>Our overconf</span></div>
+            <div class="chart-col"><div class="bar" style="height:75%"></div><span>badkeys OK-like</span></div>
+            <div class="chart-col"><div class="bar" style="height:75%"></div><span>ROCA legacy FP</span></div>
+            <div class="chart-col"><div class="bar" style="height:2%"></div><span>ROCA cal FP</span></div>
+            <div class="chart-col"><div class="bar" style="height:100%"></div><span>Recall</span></div>
+            <div class="chart-col"><div class="bar" style="height:66%"></div><span>Adaptive speed</span></div>
           </div>
-          <div class="bench-note">Prototype Benchmark — To Be Measured</div>
+          <div class="bench-note">Paper-locked · audit_paper_claims.py = 0 FAIL</div>
           <p style="margin-top:0.85rem;font-size:0.78rem;color:var(--text-dim);line-height:1.45">
-            Detection rate evaluated only on intentionally weak test keys under authorized lab conditions.
+            Contribution = evidence-correct systems evaluation, not a new factorization algorithm.
           </p>
         </div>
       </div>
@@ -544,11 +544,11 @@ flowchart TD
         <div class="closing">
           <div class="tagline">Know Your Keys. Prove Their Strength.</div>
           <div class="credits">
-            <strong>[TEAM NAME]</strong> · [MEMBER 1] · [MEMBER 2] · [MEMBER 3] · [MEMBER 4]<br/>
-            [COLLEGE / UNIVERSITY] · Mentor: [MENTOR NAME]<br/>
-            <span class="mono" style="color:var(--cyan)">GitHub: github.com/[org]/rsa-shield</span>
+            <strong>Team Aegis</strong> · Bennett University<br/>
+            Mentor: Dr. Sachin Choudhary<br/>
+            <span class="mono" style="color:var(--cyan)">Live demo: http://127.0.0.1:5173/app/demo</span>
             &nbsp;·&nbsp;
-            <span class="mono" style="color:var(--violet)">Demo: [DEMO URL]</span>
+            <span class="mono" style="color:var(--violet)">Deck: /deck/index.html</span>
           </div>
         </div>
       </div>

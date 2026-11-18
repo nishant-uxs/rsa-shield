@@ -1,31 +1,14 @@
-# RSA-SHIELD — Overleaf Presentation
+# Overleaf Beamer deck
 
-## Files
-| File | Use |
-|------|-----|
-| `RSA-SHIELD-overleaf.tex` | Upload / paste into Overleaf |
-| `RSA-SHIELD-overleaf.pdf` | Already compiled (10 pages) |
+Upload / sync `presentation/rsa_shield_beamer.tex` to Overleaf and compile with **pdfLaTeX**.
 
-## Overleaf (2 minutes)
-1. Go to [overleaf.com](https://www.overleaf.com) → **New Project** → **Blank Project**
-2. Open `main.tex`, delete everything, paste contents of `RSA-SHIELD-overleaf.tex`
-   - Or: **Upload** the `.tex` file and set it as the main document
-3. Menu → **Compiler: pdfLaTeX** → **Recompile**
-4. Download PDF
+## Settings
+- Compiler: pdfLaTeX
+- Main document: `rsa_shield_beamer.tex`
+- Theme: Madrid (clean conference look)
 
-## What’s inside (10 pages)
-1. Cover  
-2. Problem + threat-flow diagram  
-3. Gap vs RSA-SHIELD + pipeline  
-4. Audit engine + lifecycle diagram  
-5. Lenstra ECM + conceptual workflow  
-6. System architecture  
-7. Analysis layers + audit scenario  
-8. Stack, features, evaluation  
-9. Limitations / responsible use  
-10. Future scope + closing  
+## Also available
+- Browser deck: `presentation/index.html` or http://127.0.0.1:5173/deck/
+- PowerPoint: `presentation/RSA_SHIELD_Research.pptx`
 
-Diagrams are **TikZ Mermaid-style flowcharts**. Overleaf cannot run Mermaid.js; TikZ is the Overleaf-safe equivalent and looks clean.
-
-## Edit placeholders
-Replace `[TEAM NAME]`, `[MEMBER 1–4]`, `[MENTOR NAME]`, `[COLLEGE / UNIVERSITY]`, `[REPO]`, `[URL]`.
+All headline numbers match frozen `paper/data/*.json` (verified by `paper/scripts/personal_verify_paper.py`).

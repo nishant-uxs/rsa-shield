@@ -1,0 +1,124 @@
+% RSA-SHIELD research talk — compile on Overleaf (pdfLaTeX) or locally with pdflatex
+\documentclass[aspectratio=169,11pt]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\title{RSA-SHIELD}
+\subtitle{Evidence-Correct RSA Public-Key Auditing\\[0.3em]\large Measured Research Results}
+\author{Team Aegis}
+\institute{Bennett University\\Mentor: Dr.\ Sachin Choudhary}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+  \vspace{-1em}
+  \begin{center}\footnotesize Never emits an absolute \texttt{SECURE} label\end{center}
+\end{frame}
+
+\begin{frame}{Problem (epistemic, not new math)}
+  \begin{itemize}
+    \item Scanners often treat ``short probe failed'' as PASS / SECURE
+    \item Bounded failure to factor $\neq$ proof of security
+    \item Legacy / embedded RSA still appears in ICS and enterprise PKI
+    \item Need a defensive auditor with honest evidence tiers
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What we built}
+  \begin{itemize}
+    \item FastAPI + React auditor (PEM / $(N,e)$; private keys rejected)
+    \item Probes: analyzer, Fermat, Wiener, Pollard $p{-}1$, educational ROCA, ECM, batch GCD
+    \item Labels: \texttt{FACTOR\_FOUND} / \texttt{SUSPICIOUS} / \texttt{INCONCLUSIVE} / \texttt{NO\_WEAKNESS\ldots} / \texttt{INVALID}
+    \item \textbf{Never} \texttt{SECURE}
+    \item RSA-Auditor Bench v1.0 + frozen JSON evaluation dumps
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Headline measured numbers}
+  \centering
+  \renewcommand{\arraystretch}{1.25}
+  \begin{tabular}{lc}
+    \toprule
+    \textbf{Result} & \textbf{Value} \\
+    \midrule
+    Bake-off overconfidence & $0.0$ vs badkeys $0.75$ \\
+    ROCA FP (legacy $\to$ calibrated) & $75\% \to 0.2\%$ ($n{=}500$) \\
+    Adaptive mean wall & $1473.92 \to 975.75$\,ms ($1.511\times$) \\
+    Adaptive factor recall & $1.0$ preserved \\
+    CT tip unique moduli & $12010$; GCD hits $0$ \\
+    CT probe sample & $0$ \texttt{SECURE} labels \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.8em}
+  \footnotesize Sources: \texttt{bakeoff.json}, \texttt{roca\_calibration.json}, \texttt{adaptive\_ablation.json}, \texttt{ct\_measurement.json}
+\end{frame}
+
+\begin{frame}{ROCA calibration vs badkeys}
+  \begin{itemize}
+    \item Legacy educational fingerprint over-triggered on modern CT moduli
+    \item Calibration set $n{=}500$: FP $375/500$ ($75\%$), agreement $25\%$
+    \item Chosen profile: $\texttt{ratio\_threshold}{=}0.99$, $\texttt{min\_gcd}{=}2$
+    \item After calibration: FP $1/500$ ($0.2\%$), agreement $99.8\%$
+    \item Independent parity $n{=}400$: calibrated agreement $100\%$
+    \item Positives remain \texttt{SUSPICIOUS} only (fingerprint $\neq$ factorization)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Adaptive probe scheduler}
+  \begin{itemize}
+    \item Fixed budgets waste work on $2048$-bit CT-like keys
+    \item Planner shrinks/skips Fermat; trims Pollard/ECM for large bit-lengths
+    \item Keeps aggressive budgets for small/legacy keys and large-$e$ Wiener cases
+    \item Bench: same planted-factor recall ($1.0$), lower mean latency ($1.511\times$)
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Public CT tip sample}
+  \begin{itemize}
+    \item Logs: Argon2026h2, Xenon2026h2, Nimbus2026
+    \item $19504$ leaf entries $\to$ $12010$ unique RSA moduli in $1586.86$\,s
+    \item Bit lengths: $11654\times 2048$, $336\times 4096$, $20\times 3072$
+    \item Chunked batch GCD: $0$ shared-factor hits in $81172.63$\,ms
+    \item Tip sample $\neq$ billion-certificate census
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Sir live demo ($\sim$3 min)}
+  \begin{enumerate}
+    \item Open \url{http://127.0.0.1:5173/app/demo}
+    \item Run: weak-ecm $\to$ fermat-close $\to$ wiener-small-d $\to$ normal-demo
+    \item Point at evidence timeline
+    \item Stress: normal-demo is \textbf{never} labeled \texttt{SECURE}
+    \item Optional: Evaluation page for paper-style tables
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Limitations (say these out loud)}
+  \begin{itemize}
+    \item Not a new general factorization algorithm
+    \item CT study is a tip sample, not a full Internet census
+    \item \texttt{badkeys} is a fingerprint reference, not Infineon ground truth
+    \item Authorized public keys only; inconclusive $\neq$ certification
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \centering
+  \vspace{1.5em}
+  {\LARGE Know your keys. Never fake \texttt{SECURE}.}\\[1.2em]
+  Team Aegis · Bennett University\\[0.6em]
+  Paper: \texttt{paper/rsa\_shield\_ieee.pdf}\\
+  Demo: \texttt{/app/demo}
+\end{frame}
+
+\end{document}
