@@ -146,9 +146,25 @@ Interactive Web GUI + API ✅ React + FastAPI ❌ CLI only     ❌ CLI only    �
 
 ---
 
+## 📊 Locked measured results (IEEE draft)
+
+These are frozen in `paper/data/*.json` and verified by `paper/scripts/personal_verify_paper.py`:
+
+| Result | Value |
+|--------|--------|
+| Bake-off overconfidence | RSA-SHIELD **0.0** vs badkeys **0.75** |
+| ROCA FP vs badkeys ($n=500$) | **75% → 0.2%** after calibration |
+| Adaptive scheduler | **1.511×** faster; recall **1.0** |
+| CT tip sample | **12,010** unique moduli; GCD hits **0** |
+| Never-SECURE | **0** absolute SECURE labels on CT probe sample |
+
+Also shipped: Pollard $p{-}1$ fixture, feature-adaptive probe budgets, Overleaf Beamer deck.
+
+---
+
 ## 🎯 How to Cite or Present This Novelty
 
 When presenting to professors, evaluators, or conference reviewers, highlight this single summary statement:
 
-> *"RSA-SHIELD is the first defensive public-key auditing framework that combines Daniel J. Bernstein's subquadratic $\mathcal{O}(N \log^2 N)$ Batch-GCD algorithm with a strict Never-Claim-SECURE evidence taxonomy, multi-probe algebraic factoring, and NIST FIPS 203/204 Post-Quantum migration mapping—operating exclusively on public keys without risking private credential leakage."*
+> *"RSA-SHIELD is a defensive public-key auditing framework that combines Bernstein-style subquadratic Batch-GCD with a strict Never-Claim-SECURE evidence taxonomy, multi-probe algebraic factoring, calibrated ROCA fingerprinting, and adaptive probe budgets—operating exclusively on public keys without private credential leakage."*
 
