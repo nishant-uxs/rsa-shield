@@ -151,3 +151,4 @@ Interactive Web GUI + API ✅ React + FastAPI ❌ CLI only     ❌ CLI only    �
 When presenting to professors, evaluators, or conference reviewers, highlight this single summary statement:
 
 > *"RSA-SHIELD is the first defensive public-key auditing framework that combines Daniel J. Bernstein's subquadratic $\mathcal{O}(N \log^2 N)$ Batch-GCD algorithm with a strict Never-Claim-SECURE evidence taxonomy, multi-probe algebraic factoring, and NIST FIPS 203/204 Post-Quantum migration mapping—operating exclusively on public keys without risking private credential leakage."*
+

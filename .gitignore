@@ -17,6 +17,8 @@ backend/reports_out/
 *.pdf
 !presentation/*.pdf
 !paper/*.pdf
+!paper/figures/*.pdf
+!paper/figures/*.png
 
 # Env / secrets
 .env
