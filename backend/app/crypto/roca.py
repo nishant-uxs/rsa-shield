@@ -6,16 +6,20 @@ ROCA paper / CRoCS tooling: primes of the form k·M + (65537^a mod M).
 This module reports fingerprint *suspicion*. It does not claim a full discrete-log
 detector parity with crocs-muni/roca production tools; positive hits should be
 re-checked with an authoritative detector before operational conclusions.
+
+Profiles:
+  - legacy: original educational threshold (ratio >= 0.72, gcd > 1)
+  - calibrated: tightened thresholds from badkeys parity calibration (default)
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from math import gcd
+from typing import Any, Literal
 
 
 # Primorial-style fingerprint modulus used in public ROCA tooling (compact form).
-# M ≈ product of small primes covering the generator structure for 65537.
 _ROCA_PRIMES = [
     2,
     3,
@@ -45,6 +49,16 @@ def _build_m() -> int:
 
 _M = _build_m()
 
+# Default = calibrated (chosen by paper/scripts/run_roca_calibration.py on CT tip sample).
+# Update these constants when re-running calibration and freezing paper numbers.
+ROCA_PROFILES: dict[str, dict[str, float | int]] = {
+    "legacy": {"ratio_threshold": 0.72, "min_gcd": 2, "min_bits": 512},
+    # Frozen from paper/data/roca_calibration.json (CT tip n=500 vs badkeys).
+    "calibrated": {"ratio_threshold": 0.99, "min_gcd": 2, "min_bits": 512},
+}
+
+ProfileName = Literal["legacy", "calibrated"]
+
 
 @dataclass
 class RocaResult:
@@ -52,6 +66,7 @@ class RocaResult:
     score: float
     detail: str
     message: str
+    profile: str = "calibrated"
 
 
 def _order_indicators(n: int) -> tuple[int, int]:
@@ -62,7 +77,6 @@ def _order_indicators(n: int) -> tuple[int, int]:
         checked += 1
         if n % p == 0:
             continue
-        # Discrete-log-free heuristic: powers of 65537 mod p cover a small set
         g = 65537 % p
         if g == 0:
             continue
@@ -78,28 +92,74 @@ def _order_indicators(n: int) -> tuple[int, int]:
     return hits, checked
 
 
-def roca_fingerprint(n: int) -> RocaResult:
+def extract_roca_features(n: int) -> dict[str, Any]:
+    """Raw features used by both legacy and calibrated decision rules."""
     if n < 1000:
-        return RocaResult(False, 0.0, "modulus too small", "ROCA fingerprint skipped (tiny modulus)")
-
-    # Structural marker: gcd(n-1, M) richness + subgroup orbit heuristic
+        return {
+            "bits": n.bit_length(),
+            "gcd_n1_M": 0,
+            "orbit_hits": 0,
+            "orbit_checked": 0,
+            "ratio": 0.0,
+            "too_small": True,
+        }
     g = gcd(n - 1, _M)
     hits, checked = _order_indicators(n)
     ratio = hits / max(checked, 1)
+    return {
+        "bits": n.bit_length(),
+        "gcd_n1_M": g,
+        "orbit_hits": hits,
+        "orbit_checked": checked,
+        "ratio": ratio,
+        "too_small": False,
+    }
 
-    # Conservative threshold — prefer false negatives over false "vuln" drama
-    fingerprint_positive = g > 1 and ratio >= 0.72 and n.bit_length() >= 512
 
-    detail = f"gcd(n-1,M)={g}; orbit_hits={hits}/{checked} ({ratio:.2f})"
+def roca_fingerprint(
+    n: int,
+    *,
+    profile: ProfileName = "calibrated",
+    ratio_threshold: float | None = None,
+    min_gcd: int | None = None,
+    min_bits: int | None = None,
+) -> RocaResult:
+    feat = extract_roca_features(n)
+    if feat["too_small"]:
+        return RocaResult(
+            False,
+            0.0,
+            "modulus too small",
+            "ROCA fingerprint skipped (tiny modulus)",
+            profile=profile,
+        )
+
+    cfg = ROCA_PROFILES[profile]
+    thr = float(ratio_threshold if ratio_threshold is not None else cfg["ratio_threshold"])
+    mg = int(min_gcd if min_gcd is not None else cfg["min_gcd"])
+    mb = int(min_bits if min_bits is not None else cfg["min_bits"])
+
+    g = int(feat["gcd_n1_M"])
+    ratio = float(feat["ratio"])
+    bits = int(feat["bits"])
+    hits = int(feat["orbit_hits"])
+    checked = int(feat["orbit_checked"])
+
+    fingerprint_positive = bits >= mb and g >= mg and ratio >= thr
+
+    detail = (
+        f"profile={profile}; gcd(n-1,M)={g}; orbit_hits={hits}/{checked} ({ratio:.2f}); "
+        f"thr={thr:.2f}; min_gcd={mg}"
+    )
     if fingerprint_positive:
         msg = (
             "ROCA fingerprint SUSPICIOUS — modulus matches Infineon-like structure heuristics. "
             "Re-verify with crocs-muni/roca or badkeys before operational action. "
-            "Fingerprint ≠ completed Coppersmith factorization."
+            "Fingerprint != completed Coppersmith factorization."
         )
     else:
         msg = (
             "ROCA fingerprint: no strong Infineon-structure match under educational heuristic. "
             "Not a proof of ROCA-immunity."
         )
-    return RocaResult(fingerprint_positive, ratio, detail, msg)
+    return RocaResult(fingerprint_positive, ratio, detail, msg, profile=profile)

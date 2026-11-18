@@ -15,6 +15,7 @@ from app.crypto.analyzer import analyze_rsa
 from app.crypto.batch_gcd import batch_gcd, benchmark_batch_gcd_scaling
 from app.crypto.fermat import fermat_factor
 from app.crypto.parser import parse_pem
+from app.crypto.pollard_p1 import pollard_p1
 from app.crypto.roca import roca_fingerprint
 from app.crypto.wiener import generate_wiener_weak_key, wiener_attack
 from app.ecm.engine import ecm_factor
@@ -102,11 +103,26 @@ def _run_ecm(n: int, e: int, timeout_ms: int = 3000) -> ProbeOutcome:
     )
 
 
+def _run_pollard_p1(n: int, e: int, timeout_ms: int = 1500) -> ProbeOutcome:
+    t0 = time.perf_counter()
+    r = pollard_p1(n, B1=50_000, timeout_ms=timeout_ms)
+    ms = (time.perf_counter() - t0) * 1000
+    return ProbeOutcome(
+        "pollard_p1",
+        r.factor_found,
+        r.factor_found,
+        ms,
+        r.message,
+        "POLLARD_P1" if r.factor_found else None,
+    )
+
+
 PROBES: dict[str, Callable[..., ProbeOutcome]] = {
     "analyzer": _run_analyzer,
     "fermat": _run_fermat,
     "wiener": _run_wiener,
     "roca": _run_roca,
+    "pollard_p1": lambda n, e: _run_pollard_p1(n, e, 1500),
     "ecm": lambda n, e: _run_ecm(n, e, 3000),
 }
 
@@ -115,11 +131,12 @@ CONFIGS: list[dict[str, Any]] = [
     {"id": "analyzer_only", "label": "Analyzer only", "probes": ["analyzer"]},
     {"id": "plus_fermat", "label": "Analyzer + Fermat", "probes": ["analyzer", "fermat"]},
     {"id": "plus_wiener", "label": "Analyzer + Wiener", "probes": ["analyzer", "wiener"]},
+    {"id": "plus_pollard", "label": "Analyzer + Pollard p-1", "probes": ["analyzer", "pollard_p1"]},
     {"id": "plus_ecm", "label": "Analyzer + ECM", "probes": ["analyzer", "ecm"]},
     {
         "id": "full_shield",
-        "label": "RSA-SHIELD full (A+F+W+ROCA+ECM)",
-        "probes": ["analyzer", "fermat", "wiener", "roca", "ecm"],
+        "label": "RSA-SHIELD full (A+F+W+ROCA+P1+ECM)",
+        "probes": ["analyzer", "fermat", "wiener", "roca", "pollard_p1", "ecm"],
     },
 ]
 
@@ -133,7 +150,7 @@ def _classify(factor_found: bool, suspicious: bool) -> str:
 
 
 def _expected_factor(fx_id: str) -> bool:
-    return fx_id in {"weak-ecm", "small-factor", "fermat-close", "wiener-small-d"}
+    return fx_id in {"weak-ecm", "small-factor", "fermat-close", "wiener-small-d", "pollard-p1"}
 
 
 def run_ablation(*, ecm_timeout_ms: int = 3000) -> dict[str, Any]:

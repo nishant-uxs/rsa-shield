@@ -1,15 +1,17 @@
-"""Audit orchestration: validate → analyze → Fermat/Wiener/ROCA → ECM → classify."""
+"""Audit orchestration: validate -> analyze -> Fermat/Wiener/ROCA -> Pollard p-1 -> ECM -> classify."""
 
 from __future__ import annotations
 
 from datetime import datetime, timezone
 from typing import Any
 
+from app.audit.adaptive import ProbePlan, plan_probes
 from app.core.config import get_settings
 from app.core.enums import AuditState, FindingCategory, JobStatus
 from app.crypto.analyzer import AnalysisResult, analyze_rsa
 from app.crypto.fermat import FermatResult, fermat_factor
 from app.crypto.parser import hex_to_int
+from app.crypto.pollard_p1 import PollardP1Result, pollard_p1
 from app.crypto.roca import RocaResult, roca_fingerprint
 from app.crypto.wiener import WienerResult, wiener_attack
 from app.ecm.engine import EcmResult, ecm_factor
@@ -61,7 +63,7 @@ def recommendations_for(state: AuditState) -> list[str]:
         ]
     if state == AuditState.INCONCLUSIVE:
         return [
-            "Configured probes (ECM / Fermat / Wiener) did not discover a factor within budget.",
+            "Configured probes (Fermat / Wiener / Pollard p-1 / ECM) did not discover a factor within budget.",
             "Increase budget only for authorized lab analysis; do not treat this as a security proof.",
             *base,
         ]
@@ -81,6 +83,7 @@ def run_audit_pipeline(
     timeout_ms: int | None = None,
     curves: int | None = None,
     b1: int | None = None,
+    adaptive: bool = False,
 ) -> dict[str, Any]:
     settings = get_settings()
     timeout_ms = timeout_ms or settings.default_ecm_timeout_ms
@@ -92,6 +95,39 @@ def run_audit_pipeline(
     timeline.append({"at": t0.isoformat(), "event": "AUDIT_STARTED", "detail": "Validation and analysis started"})
 
     n = hex_to_int(n_hex)
+    bits = n.bit_length()
+    plan: ProbePlan
+    if adaptive:
+        plan = plan_probes(
+            bits=bits,
+            e=e,
+            base_ecm_timeout_ms=timeout_ms,
+            base_ecm_curves=curves,
+            base_ecm_b1=b1,
+            run_ecm=run_ecm,
+        )
+    else:
+        plan = ProbePlan(
+            fermat_steps=25_000,
+            pollard_b1=min(50_000, max(10_000, b1)),
+            pollard_timeout_ms=min(1500, max(500, timeout_ms // 2)),
+            ecm_timeout_ms=timeout_ms,
+            ecm_curves=curves,
+            ecm_b1=b1,
+            run_fermat=True,
+            run_wiener=True,
+            run_pollard=True,
+            run_ecm=run_ecm,
+            rationale="fixed_legacy_budgets",
+        )
+    timeline.append(
+        {
+            "at": _utcnow().isoformat(),
+            "event": "PROBE_PLAN",
+            "detail": f"adaptive={adaptive}; {plan.rationale}",
+        }
+    )
+
     analysis = analyze_rsa(n, e)
     timeline.append(
         {
@@ -131,9 +167,10 @@ def run_audit_pipeline(
     fermat: FermatResult | None = None
     wiener: WienerResult | None = None
     roca: RocaResult | None = None
+    pollard: PollardP1Result | None = None
 
-    if analysis.valid and not factor_found:
-        fermat = fermat_factor(n, max_steps=25_000)
+    if analysis.valid and not factor_found and plan.run_fermat:
+        fermat = fermat_factor(n, max_steps=plan.fermat_steps)
         timeline.append({"at": _utcnow().isoformat(), "event": "FERMAT_DONE", "detail": fermat.message})
         findings.append(
             {
@@ -152,7 +189,7 @@ def run_audit_pipeline(
             cofactor_hex = format(fermat.cofactor or (n // fermat.factor), "x")
             factor_method = "FERMAT"
 
-    if analysis.valid and not factor_found:
+    if analysis.valid and not factor_found and plan.run_wiener:
         wiener = wiener_attack(n, e)
         timeline.append({"at": _utcnow().isoformat(), "event": "WIENER_DONE", "detail": wiener.message})
         findings.append(
@@ -187,12 +224,36 @@ def run_audit_pipeline(
         if roca.fingerprint_positive:
             analysis.suspicious = True
 
-    ecm: EcmResult | None = None
-    if run_ecm and analysis.valid and not factor_found:
-        timeline.append(
-            {"at": _utcnow().isoformat(), "event": "ECM_STARTED", "detail": f"timeout_ms={timeout_ms} curves={curves}"}
+    if analysis.valid and not factor_found and plan.run_pollard:
+        pollard = pollard_p1(n, B1=plan.pollard_b1, timeout_ms=plan.pollard_timeout_ms)
+        timeline.append({"at": _utcnow().isoformat(), "event": "POLLARD_P1_DONE", "detail": pollard.message})
+        findings.append(
+            {
+                "category": FindingCategory.DETERMINISTIC.value
+                if pollard.factor_found
+                else FindingCategory.HEURISTIC.value,
+                "code": "POLLARD_P1_PROBE",
+                "severity": "critical" if pollard.factor_found else "info",
+                "title": "Pollard p-1 smooth-order probe",
+                "detail": pollard.message,
+            }
         )
-        ecm = ecm_factor(n, timeout_ms=timeout_ms, curves=curves, B1=b1)
+        if pollard.factor_found and pollard.factor:
+            factor_found = True
+            factor_hex = format(pollard.factor, "x")
+            cofactor_hex = format(pollard.cofactor or (n // pollard.factor), "x")
+            factor_method = "POLLARD_P1"
+
+    ecm: EcmResult | None = None
+    if plan.run_ecm and analysis.valid and not factor_found:
+        timeline.append(
+            {
+                "at": _utcnow().isoformat(),
+                "event": "ECM_STARTED",
+                "detail": f"timeout_ms={plan.ecm_timeout_ms} curves={plan.ecm_curves}",
+            }
+        )
+        ecm = ecm_factor(n, timeout_ms=plan.ecm_timeout_ms, curves=plan.ecm_curves, B1=plan.ecm_b1)
         timeline.append({"at": _utcnow().isoformat(), "event": "ECM_FINISHED", "detail": ecm.message})
         findings.append(
             {
@@ -213,7 +274,7 @@ def run_audit_pipeline(
     state = classify(
         analysis,
         ecm,
-        run_ecm=run_ecm,
+        run_ecm=plan.run_ecm,
         factor_found=factor_found,
         roca_positive=roca_positive,
     )
@@ -257,6 +318,15 @@ def run_audit_pipeline(
                 "detail": roca.detail,
                 "message": roca.message,
             },
+            "pollard_p1": None
+            if pollard is None
+            else {
+                "factor_found": pollard.factor_found,
+                "B1": pollard.B1,
+                "elapsed_ms": pollard.elapsed_ms,
+                "timed_out": pollard.timed_out,
+                "message": pollard.message,
+            },
         },
         "ecm": None
         if ecm is None
@@ -268,6 +338,22 @@ def run_audit_pipeline(
             "message": ecm.message,
             "status": JobStatus.TIMED_OUT.value if ecm.timed_out else JobStatus.COMPLETED.value,
         },
-        "ecm_config": {"timeout_ms": timeout_ms, "curves": curves, "b1": b1, "run_ecm": run_ecm},
+        "ecm_config": {
+            "timeout_ms": plan.ecm_timeout_ms,
+            "curves": plan.ecm_curves,
+            "b1": plan.ecm_b1,
+            "run_ecm": plan.run_ecm,
+        },
+        "adaptive": adaptive,
+        "probe_plan": {
+            "fermat_steps": plan.fermat_steps,
+            "pollard_b1": plan.pollard_b1,
+            "pollard_timeout_ms": plan.pollard_timeout_ms,
+            "run_fermat": plan.run_fermat,
+            "run_wiener": plan.run_wiener,
+            "run_pollard": plan.run_pollard,
+            "run_ecm": plan.run_ecm,
+            "rationale": plan.rationale,
+        },
         "job_status": JobStatus.COMPLETED.value,
     }

@@ -59,40 +59,27 @@ def build_product_tree(moduli: list[int]) -> list[list[int]]:
 
 
 def build_remainder_tree(tree: list[list[int]], moduli: list[int]) -> list[int]:
-    """Compute R_i = (Product of all m_j) mod m_i^2 top-down.
-    
-    Using the algebraic property: if A and B are child nodes of C = A * B,
-    then (P mod C^2) mod A^2 = P mod A^2.
+    """Compute R_i = (Product of all m_j) mod m_i^2 top-down (Bernstein/facthacks).
+
+    Start from the root product P, then descend:
+    R_child = R_parent mod node^2.
+    Note: R_i == 0 can occur when m_i^2 divides P (strong multi-way sharing);
+    callers must treat that as a vulnerable index, not as \"no factor\".
     """
     n = len(moduli)
     if n == 0:
         return []
     if n == 1:
         return [0]
-    if len(tree) < 2:
+    if not tree or not tree[-1]:
         return [0] * n
 
-    remainders: list[list[int] | None] = [None] * len(tree)
-    top = tree[-2]
-    if len(top) == 2:
-        a, b = top[0], top[1]
-        remainders[-2] = [a * (b % a), b * (a % b)]
-    else:
-        remainders[-2] = [0]
-
-    for k in range(len(tree) - 3, -1, -1):
-        prev_r = remainders[k + 1]
-        assert prev_r is not None
-        curr_nodes = tree[k]
-        curr_r: list[int] = []
-        for i, node in enumerate(curr_nodes):
-            parent_val = prev_r[i // 2]
-            node_sq = node * node
-            curr_r.append(parent_val % node_sq if node_sq > 0 else 0)
-        remainders[k] = curr_r
-
-    leaf_r = remainders[0]
-    return leaf_r if leaf_r is not None else [0] * n
+    # Root remainder is P itself (P mod P^2 == P when P > 0).
+    R = list(tree[-1])
+    for k in range(len(tree) - 2, -1, -1):
+        nodes = tree[k]
+        R = [R[i // 2] % (nodes[i] * nodes[i]) for i in range(len(nodes))]
+    return R
 
 
 def fast_batch_gcd(
@@ -136,10 +123,14 @@ def fast_batch_gcd(
     tree = build_product_tree(clean_moduli)
     leaf_remainders = build_remainder_tree(tree, clean_moduli)
 
-    # Identify individual keys that have shared factors with any other key
+    # Identify individual keys that have shared factors with any other key.
+    # rem==0 ⇒ m^2 | P (multi-way shared factors); still vulnerable.
     vulnerable_indices: list[int] = []
     for local_idx, m in enumerate(clean_moduli):
         rem = leaf_remainders[local_idx]
+        if rem == 0:
+            vulnerable_indices.append(valid_indices[local_idx])
+            continue
         z = rem // m
         g = gcd(m, z)
         if 1 < g < m:
@@ -260,7 +251,7 @@ def benchmark_batch_gcd_scaling(sizes: list[int] | None = None) -> list[dict[str
     from Crypto.Util.number import getPrime
 
     if sizes is None:
-        sizes = [20, 50, 100, 200, 400]
+        sizes = [20, 50, 100, 200, 400, 1000]
 
     # Shared prime collision fixture
     shared_p = getPrime(256)

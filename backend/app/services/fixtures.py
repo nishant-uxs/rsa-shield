@@ -1,9 +1,11 @@
-"""Controlled educational fixtures. Never targets external systems."""
+"""Controlled educational fixtures. Never targets external systems.
+
+All moduli below are frozen for reproducible RSA-Auditor Bench / paper dumps.
+"""
 
 from __future__ import annotations
 
 from Crypto.PublicKey import RSA
-from Crypto.Util.number import getPrime, isPrime
 
 
 # Tiny factors — deterministic trial division finds these immediately.
@@ -24,24 +26,32 @@ N_NORMAL = P_NORMAL * Q_NORMAL
 N_WIENER = 2481545804494113232096604789576025074500577845743602173217
 E_WIENER = 165107158544877572609780949974738783268249968586186155449
 
+# Frozen near-twin Fermat demo (|p−q|=54).
+P_FERMAT = 9223372036854875869
+Q_FERMAT = 9223372036854875923
+N_FERMAT = P_FERMAT * Q_FERMAT
+
+# Pollard's p-1 demo: 641 divides F5; 641-1=640 is B1-smooth.
+N_POLLARD_P1 = 641 * 6700417
+
+# Frozen 1024-bit public key (public material only).
+N_LEGACY_1024 = int(
+    "153592992512716466888850220916194539089158400241293992137444396041683584104727854498923400114256028781743713031180197017986077384629728093859647528152512950305645782249062182039585271862061005574173988834279589896197616896118213377030936141266811918831300936650508062613641459451304463298018714248038541695617"
+)
+LEGACY_1024_PEM = """-----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDauUMyaQ7XSFsKCbATKELutgDt
+NmfYzXQAB1PP+uB8xtBa8wMPcxuiZjxFjtoqhVEGOVuPpsvi7OlX59/Ck+unr68P
+zclo2qsXFHNGUu3XnzJ8E+wRqicevsx9GV9GMgKlj2U/RNt+i8OR1WljVKHqtxE5
+XFSSeM1niw4L5RQagQIDAQAB
+-----END PUBLIC KEY-----
+"""
+
 
 def _pem_from_ne(n: int, e: int = E) -> str:
     return RSA.construct((n, e)).export_key("PEM").decode()
 
 
-def _fermat_close_modulus(bits: int = 128) -> tuple[int, int, int]:
-    """Two close primes so Fermat succeeds quickly."""
-    half = bits // 2
-    p = getPrime(half)
-    q = p + 2
-    while not isPrime(q):
-        q += 2
-    return p * q, p, q
-
-
 def build_fixtures() -> list[dict]:
-    legacy_pem = RSA.generate(1024).publickey().export_key("PEM").decode()
-    n_fermat, _, _ = _fermat_close_modulus(128)
     n_w, e_w = N_WIENER, E_WIENER
 
     return [
@@ -54,6 +64,10 @@ def build_fixtures() -> list[dict]:
             "n": str(N_WEAK),
             "e": E,
             "expected_hint": "FACTOR_FOUND",
+            "expects_factor": True,
+            "expected_method": "ECM",
+            "expected_tier": "FACTOR_FOUND",
+            "bench_class": "smoothish_factor",
         },
         {
             "id": "small-factor",
@@ -64,16 +78,24 @@ def build_fixtures() -> list[dict]:
             "n": str(N_TINY),
             "e": E,
             "expected_hint": "FACTOR_FOUND",
+            "expects_factor": True,
+            "expected_method": "TINY_FACTOR",
+            "expected_tier": "FACTOR_FOUND",
+            "bench_class": "tiny_factor",
         },
         {
             "id": "fermat-close",
             "name": "Fermat near-twin primes demo",
             "description": "Modulus with intentionally close primes (|p−q| tiny) so Fermat factorization recovers factors.",
             "category": "weak",
-            "pem": _pem_from_ne(n_fermat),
-            "n": str(n_fermat),
+            "pem": _pem_from_ne(N_FERMAT),
+            "n": str(N_FERMAT),
             "e": E,
             "expected_hint": "FACTOR_FOUND (FERMAT)",
+            "expects_factor": True,
+            "expected_method": "FERMAT",
+            "expected_tier": "FACTOR_FOUND",
+            "bench_class": "fermat_close",
         },
         {
             "id": "wiener-small-d",
@@ -84,6 +106,24 @@ def build_fixtures() -> list[dict]:
             "n": str(n_w),
             "e": e_w,
             "expected_hint": "FACTOR_FOUND (WIENER)",
+            "expects_factor": True,
+            "expected_method": "WIENER",
+            "expected_tier": "FACTOR_FOUND",
+            "bench_class": "wiener_small_d",
+        },
+        {
+            "id": "pollard-p1",
+            "name": "Pollard p-1 smooth-order demo",
+            "description": "Modulus with a factor p where p-1 is B1-smooth so budgeted Pollard p-1 recovers p.",
+            "category": "weak",
+            "pem": _pem_from_ne(N_POLLARD_P1),
+            "n": str(N_POLLARD_P1),
+            "e": E,
+            "expected_hint": "FACTOR_FOUND (POLLARD_P1)",
+            "expects_factor": True,
+            "expected_method": "POLLARD_P1",
+            "expected_tier": "FACTOR_FOUND",
+            "bench_class": "pollard_p1_smooth",
         },
         {
             "id": "normal-demo",
@@ -94,16 +134,24 @@ def build_fixtures() -> list[dict]:
             "n": str(N_NORMAL),
             "e": E,
             "expected_hint": "SUSPICIOUS or INCONCLUSIVE",
+            "expects_factor": False,
+            "expected_method": None,
+            "expected_tier": "SUSPICIOUS",
+            "bench_class": "normal_lab",
         },
         {
             "id": "legacy-1024",
             "name": "Legacy-size RSA-1024 public key",
-            "description": "Fresh 1024-bit RSA public key. Likely heuristic legacy-size warning; ECM usually inconclusive.",
+            "description": "Frozen 1024-bit RSA public key. Likely heuristic legacy-size warning; ECM usually inconclusive.",
             "category": "normal",
-            "pem": legacy_pem,
-            "n": None,
+            "pem": LEGACY_1024_PEM,
+            "n": str(N_LEGACY_1024),
             "e": E,
             "expected_hint": "SUSPICIOUS or INCONCLUSIVE",
+            "expects_factor": False,
+            "expected_method": None,
+            "expected_tier": "SUSPICIOUS",
+            "bench_class": "legacy_size",
         },
         {
             "id": "invalid-pem",
@@ -114,6 +162,10 @@ def build_fixtures() -> list[dict]:
             "n": None,
             "e": None,
             "expected_hint": "INVALID_KEY",
+            "expects_factor": False,
+            "expected_method": None,
+            "expected_tier": "INVALID_KEY",
+            "bench_class": "invalid",
         },
     ]
 
