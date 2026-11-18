@@ -41,8 +41,19 @@ ACM twin files may lag; treat IEEE as the source of truth for this revision.
 - Epistemic bake-off: RSA-SHIELD recall **1.0** / overconfidence **0.0**; badkeys recall **0.75** / overconfidence **0.75**  
 - Batch-GCD at $N=1000$: tree **645.79 ms** vs naive **1246.17 ms** (**1.93×**)  
 - Mini corpus ($n=40$): **4** single-key factor finds; **1** shared-factor batch-GCD hit; SECURE labels **0**  
-- Dump timestamp: **2026-11-13** (`paper/data/`); Bench **v1.0** (`paper/benchmark/`); PDF target: **~6 pages**
+- CT tip sample: **12010** unique moduli; chunked batch-GCD hits **0**  
+- ROCA calibration ($n=500$): FP **75% → 0.2%**; agreement **99.8%** (thr=`0.99`)  
+- Adaptive scheduler: **1473.92 → 975.75 ms** (**1.511×**); recall **1.0**  
+- Dump timestamp (core suite): **2026-11-13**; Bench **v1.0**; PDF target: **~6 pages**
 
+## Verify every number + citation
+
+```powershell
+.\backend\.venv\Scripts\python.exe paper\scripts\personal_verify_paper.py
+.\scripts\verify_paper.ps1
+```
+
+Expect `FAIL=0`.
 ## Regenerate results + figures
 
 ```powershell
