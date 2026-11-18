@@ -61,12 +61,12 @@ export function LandingPage() {
             </p>
           </div>
 
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-md mx-auto">
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-2xl mx-auto">
             <Link
-              to="/app/auditor"
+              to="/app/demo"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg bg-cyan text-on-primary display text-sm font-semibold shadow-[0_0_24px_rgba(34,211,238,0.4)] hover:brightness-110 transition sheen"
             >
-              Start an Audit
+              Sir Demo (guided test)
               <ChevronRight className="h-4 w-4" />
             </Link>
             <Link
@@ -75,6 +75,12 @@ export function LandingPage() {
             >
               <FlaskConical className="h-4 w-4" />
               Explore Test Lab
+            </Link>
+            <Link
+              to="/app/evaluation"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-lg glass text-text hover:text-cyan hover:border-cyan/40 display text-sm font-medium transition"
+            >
+              Research numbers
             </Link>
           </div>
 

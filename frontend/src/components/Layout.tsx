@@ -15,6 +15,7 @@ import clsx from "clsx";
 
 const LINKS = [
   { to: "/app", end: true, label: "Dashboard", icon: LayoutDashboard },
+  { to: "/app/demo", label: "Sir Demo", icon: Shield, badge: "LIVE" },
   { to: "/app/auditor", label: "RSA Auditor", icon: KeyRound, badge: "v4.12" },
   { to: "/app/inventory", label: "Key Inventory", icon: ListTree },
   { to: "/app/ecm", label: "ECM Analysis", icon: Network },

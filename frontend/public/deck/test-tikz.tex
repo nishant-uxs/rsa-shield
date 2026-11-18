@@ -1,0 +1,15 @@
+﻿\documentclass{article}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\definecolor{cyan}{HTML}{22D3EE}
+\definecolor{pane}{HTML}{151922}
+\definecolor{soft}{HTML}{E8EEF7}
+\definecolor{muted}{HTML}{94A3B8}
+\begin{document}
+\begin{tikzpicture}
+\node[draw=cyan, fill=pane, text=soft, rounded corners=2pt] (a) {Hello};
+\node[draw=muted, fill=pane, text=soft, right=of a] (b) {World};
+\draw[-{Latex}, draw=muted] (a) -- (b);
+\end{tikzpicture}
+\end{document}

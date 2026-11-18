@@ -10,6 +10,7 @@ import { EcmPage } from "./pages/EcmPage";
 import { ReportsPage } from "./pages/ReportsPage";
 import { EvaluationPage } from "./pages/EvaluationPage";
 import { ResearchPage } from "./pages/ResearchPage";
+import { DemoPage } from "./pages/DemoPage";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="inventory" element={<InventoryPage />} />
           <Route path="ecm" element={<EcmPage />} />
           <Route path="lab" element={<LabPage />} />
+          <Route path="demo" element={<DemoPage />} />
           <Route path="evaluation" element={<EvaluationPage />} />
           <Route path="research" element={<ResearchPage />} />
           <Route path="reports" element={<ReportsPage />} />
