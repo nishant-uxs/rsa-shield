@@ -122,7 +122,7 @@ Shared primes are detectable by batch GCD~\cite{heninger2012mining}. RSA-SHIELD 
 \section{Experimental Evaluation}
 \label{sec:eval}
 \subsection{Setup and Reproducibility}
-All numbers come from a frozen dump by \texttt{paper/scripts/dump\_eval\_data.py} on 2026-11-13 (UTC timestamp \texttt{2026-11-13T08:55:11.449049+00:00}), Windows-10-10.0.26300, Python~3.11.9, ECM timeout $2500$\,ms, corpus size $40$, bench version $1.0.0$, \texttt{emits\_secure\_label}${=}$\texttt{false}. Artifacts: \texttt{paper/data/*.json}, \texttt{paper/benchmark/}, figures via \texttt{generate\_figures.py}. Milliseconds are machine wall-clock (no hand-edited cells).
+Core suite/ablation/comparison/corpus/batch dumps were frozen by \texttt{paper/scripts/dump\_eval\_data.py} on 2026-11-13 (UTC \texttt{2026-11-13T08:55:11.449049+00:00}). CT tip, ROCA calibration/parity, and adaptive ablation dumps were frozen on 2026-11-18 on the same host. Host: Windows-10-10.0.26300-SP0, Python~3.11.9, ECM timeout $2500$\,ms, corpus size $40$, bench version $1.0.0$, \texttt{emits\_secure\_label}${=}$\texttt{false}. Artifacts: \texttt{paper/data/*.json}, \texttt{paper/benchmark/}, figures via \texttt{generate\_figures.py}. Milliseconds are machine wall-clock (no hand-edited cells).
 
 \subsection{RSA-Auditor Bench}
 Bench v1.0 freezes seven labeled public-key fixtures under \texttt{paper/benchmark/manifest.json} (deterministic $N$/$e$/PEM, including previously randomized Fermat and legacy-1024 material). Classes: tiny/smoothish/Fermat/Wiener weaknesses, normal lab, legacy-size, and invalid PEM. Expected tiers/methods enable external tools to be scored on the \emph{same} ground truth.
@@ -198,7 +198,7 @@ weak-ecm & \texttt{FACTOR\_FOUND} & ECM & 36.51 \\
 small-factor & \texttt{FACTOR\_FOUND} & TINY\_FACTOR & 0.16 \\
 fermat-close & \texttt{FACTOR\_FOUND} & FERMAT & 0.13 \\
 wiener-small-d & \texttt{FACTOR\_FOUND} & WIENER & 9.48 \\
-normal-demo & \texttt{SUSPICIOUS} & --- & 2508.70 \\
+normal-demo & \texttt{SUSPICIOUS} & --- & 2508.7 \\
 legacy-1024 & \texttt{SUSPICIOUS} & --- & 8050.87 \\
 invalid-pem & \texttt{INVALID\_KEY} & --- & 0 \\
 \bottomrule
@@ -364,7 +364,7 @@ Fixed budgets waste work on $2048$-bit CT-like keys (near-twin Fermat rarely hel
 Bake-off overconfidence, ROCA parity disagreement, and adaptive latency-with-preserved-recall are the headline systems results. Classical probes remain the engine; batch microbenchmarks are supporting. Precision $1.0$ on Bench is not a production CVE false-positive rate.
 
 \section{Implementation and Reproducibility}
-FastAPI + React/Vite; evaluation endpoints regenerate Tables~\ref{tab:bakeoff}--\ref{tab:batch}. Budgets: Fermat $25{,}000$ steps, ECM $2500$\,ms baseline; probe order analyzer$\rightarrow$Fermat$\rightarrow$Wiener$\rightarrow$ROCA$\rightarrow$ECM with short-circuit on first factor. Workflow: \texttt{export\_benchmark.py}, \texttt{dump\_eval\_data.py} (includes bake-off), \texttt{generate\_figures.py}, \texttt{audit\_paper\_claims.py}. Large Wiener exponents are stored as decimal strings to avoid $64$-bit SQLite overflow. Responsible use: authorized public keys only; never paraphrase inconclusive as certification. Re-running on another machine may change wall-clock milliseconds; structural counts (hint matches, TP/FP/FN, bake-off overconfidence numerators, batch parity) are the intended cross-machine invariants.
+FastAPI + React/Vite; evaluation endpoints regenerate Tables~\ref{tab:bakeoff}--\ref{tab:batch}. Budgets: Fermat $25{,}000$ steps, ECM $2500$\,ms baseline; probe order analyzer$\rightarrow$Fermat$\rightarrow$Wiener$\rightarrow$ROCA$\rightarrow$Pollard~$p{-}1$$\rightarrow$ECM with short-circuit on first factor. Workflow: \texttt{export\_benchmark.py}, \texttt{dump\_eval\_data.py} (includes bake-off), \texttt{generate\_figures.py}, \texttt{audit\_paper\_claims.py}. Large Wiener exponents are stored as decimal strings to avoid $64$-bit SQLite overflow. Responsible use: authorized public keys only; never paraphrase inconclusive as certification. Re-running on another machine may change wall-clock milliseconds; structural counts (hint matches, TP/FP/FN, bake-off overconfidence numerators, batch parity) are the intended cross-machine invariants.
 
 \section{Related Work}
 \paragraph{Measurement and batch GCD.}
