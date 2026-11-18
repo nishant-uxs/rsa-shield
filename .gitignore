@@ -41,6 +41,14 @@ presentation/*.toc
 presentation/*.snm
 presentation/compile*.txt
 presentation/test-tikz*
+frontend/public/deck/*.aux
+frontend/public/deck/*.log
+frontend/public/deck/*.nav
+frontend/public/deck/*.out
+frontend/public/deck/*.toc
+frontend/public/deck/*.snm
+frontend/public/deck/compile*.txt
+frontend/public/deck/test-tikz*
 paper/*.aux
 paper/*.log
 paper/*.out
