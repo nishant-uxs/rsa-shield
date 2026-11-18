@@ -1,0 +1,316 @@
+{
+  "study": "adaptive_probe_scheduler_ablation",
+  "generated_at": "2026-11-18T06:02:15.647750+00:00",
+  "ecm_timeout_ms_baseline": 2500,
+  "disclaimer": "Compares fixed vs feature-adaptive probe budgets on Bench fixtures. Adaptive mode must not reduce factor recall on planted weak classes.",
+  "fixed": {
+    "rows": [
+      {
+        "fixture_id": "weak-ecm",
+        "expects_factor": true,
+        "factor_found": true,
+        "factor_method": "POLLARD_P1",
+        "final_state": "FACTOR_FOUND",
+        "elapsed_ms": 13.44,
+        "wall_ms": 13.68,
+        "probe_plan": {
+          "fermat_steps": 25000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1250,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "fixed_legacy_budgets"
+        },
+        "correct": true
+      },
+      {
+        "fixture_id": "small-factor",
+        "expects_factor": true,
+        "factor_found": true,
+        "factor_method": "TINY_FACTOR",
+        "final_state": "FACTOR_FOUND",
+        "elapsed_ms": 0.1,
+        "wall_ms": 0.1,
+        "probe_plan": {
+          "fermat_steps": 25000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1250,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "fixed_legacy_budgets"
+        },
+        "correct": true
+      },
+      {
+        "fixture_id": "fermat-close",
+        "expects_factor": true,
+        "factor_found": true,
+        "factor_method": "FERMAT",
+        "final_state": "FACTOR_FOUND",
+        "elapsed_ms": 0.07,
+        "wall_ms": 0.07,
+        "probe_plan": {
+          "fermat_steps": 25000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1250,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "fixed_legacy_budgets"
+        },
+        "correct": true
+      },
+      {
+        "fixture_id": "wiener-small-d",
+        "expects_factor": true,
+        "factor_found": true,
+        "factor_method": "WIENER",
+        "final_state": "FACTOR_FOUND",
+        "elapsed_ms": 8.0,
+        "wall_ms": 8.09,
+        "probe_plan": {
+          "fermat_steps": 25000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1250,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "fixed_legacy_budgets"
+        },
+        "correct": true
+      },
+      {
+        "fixture_id": "pollard-p1",
+        "expects_factor": true,
+        "factor_found": true,
+        "factor_method": "POLLARD_P1",
+        "final_state": "FACTOR_FOUND",
+        "elapsed_ms": 3.0,
+        "wall_ms": 2.55,
+        "probe_plan": {
+          "fermat_steps": 25000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1250,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "fixed_legacy_budgets"
+        },
+        "correct": true
+      },
+      {
+        "fixture_id": "normal-demo",
+        "expects_factor": false,
+        "factor_found": false,
+        "factor_method": null,
+        "final_state": "SUSPICIOUS",
+        "elapsed_ms": 2012.71,
+        "wall_ms": 2012.92,
+        "probe_plan": {
+          "fermat_steps": 25000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1250,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "fixed_legacy_budgets"
+        },
+        "correct": true
+      },
+      {
+        "fixture_id": "legacy-1024",
+        "expects_factor": false,
+        "factor_found": false,
+        "factor_method": null,
+        "final_state": "SUSPICIOUS",
+        "elapsed_ms": 8280.07,
+        "wall_ms": 8280.04,
+        "probe_plan": {
+          "fermat_steps": 25000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1500,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "fixed_legacy_budgets"
+        },
+        "correct": true
+      }
+    ],
+    "aggregate": {
+      "n": 7,
+      "weak_fixtures": 5,
+      "tp": 5,
+      "fn": 0,
+      "factor_recall": 1.0,
+      "avg_wall_ms": 1473.92,
+      "avg_elapsed_ms": 1473.91,
+      "secure_labels": 0
+    }
+  },
+  "adaptive": {
+    "rows": [
+      {
+        "fixture_id": "weak-ecm",
+        "expects_factor": true,
+        "factor_found": true,
+        "factor_method": "POLLARD_P1",
+        "final_state": "FACTOR_FOUND",
+        "elapsed_ms": 28.0,
+        "wall_ms": 28.04,
+        "probe_plan": {
+          "fermat_steps": 50000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1500,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "small_bits->aggressive_fermat_pollard"
+        },
+        "correct": true
+      },
+      {
+        "fixture_id": "small-factor",
+        "expects_factor": true,
+        "factor_found": true,
+        "factor_method": "TINY_FACTOR",
+        "final_state": "FACTOR_FOUND",
+        "elapsed_ms": 0.15,
+        "wall_ms": 0.15,
+        "probe_plan": {
+          "fermat_steps": 50000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1500,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "small_bits->aggressive_fermat_pollard"
+        },
+        "correct": true
+      },
+      {
+        "fixture_id": "fermat-close",
+        "expects_factor": true,
+        "factor_found": true,
+        "factor_method": "FERMAT",
+        "final_state": "FACTOR_FOUND",
+        "elapsed_ms": 0.12,
+        "wall_ms": 0.12,
+        "probe_plan": {
+          "fermat_steps": 50000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1500,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "small_bits->aggressive_fermat_pollard"
+        },
+        "correct": true
+      },
+      {
+        "fixture_id": "wiener-small-d",
+        "expects_factor": true,
+        "factor_found": true,
+        "factor_method": "WIENER",
+        "final_state": "FACTOR_FOUND",
+        "elapsed_ms": 28.16,
+        "wall_ms": 27.54,
+        "probe_plan": {
+          "fermat_steps": 50000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1500,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "large_e->prioritize_wiener+small_bits->aggressive_fermat_pollard"
+        },
+        "correct": true
+      },
+      {
+        "fixture_id": "pollard-p1",
+        "expects_factor": true,
+        "factor_found": true,
+        "factor_method": "POLLARD_P1",
+        "final_state": "FACTOR_FOUND",
+        "elapsed_ms": 11.1,
+        "wall_ms": 11.04,
+        "probe_plan": {
+          "fermat_steps": 50000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1500,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "small_bits->aggressive_fermat_pollard"
+        },
+        "correct": true
+      },
+      {
+        "fixture_id": "normal-demo",
+        "expects_factor": false,
+        "factor_found": false,
+        "factor_method": null,
+        "final_state": "SUSPICIOUS",
+        "elapsed_ms": 2564.21,
+        "wall_ms": 2564.2,
+        "probe_plan": {
+          "fermat_steps": 50000,
+          "pollard_b1": 50000,
+          "pollard_timeout_ms": 1500,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "small_bits->aggressive_fermat_pollard"
+        },
+        "correct": true
+      },
+      {
+        "fixture_id": "legacy-1024",
+        "expects_factor": false,
+        "factor_found": false,
+        "factor_method": null,
+        "final_state": "SUSPICIOUS",
+        "elapsed_ms": 4198.86,
+        "wall_ms": 4199.15,
+        "probe_plan": {
+          "fermat_steps": 5000,
+          "pollard_b1": 20000,
+          "pollard_timeout_ms": 800,
+          "run_fermat": true,
+          "run_wiener": true,
+          "run_pollard": true,
+          "run_ecm": true,
+          "rationale": "mid_bits->trim_fermat"
+        },
+        "correct": true
+      }
+    ],
+    "aggregate": {
+      "n": 7,
+      "weak_fixtures": 5,
+      "tp": 5,
+      "fn": 0,
+      "factor_recall": 1.0,
+      "avg_wall_ms": 975.75,
+      "avg_elapsed_ms": 975.8,
+      "secure_labels": 0
+    }
+  },
+  "speedup_factor_avg_wall": 1.511,
+  "recall_preserved": true
+}

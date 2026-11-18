@@ -1,0 +1,56 @@
+[
+  {
+    "key_count": 20,
+    "pairs_equivalent": 190,
+    "naive_pairwise_ms": 0.57,
+    "subquadratic_tree_ms": 0.7,
+    "speedup_factor": "0.82x",
+    "hits_detected": 1,
+    "parity_verified": true
+  },
+  {
+    "key_count": 50,
+    "pairs_equivalent": 1225,
+    "naive_pairwise_ms": 4.19,
+    "subquadratic_tree_ms": 2.81,
+    "speedup_factor": "1.49x",
+    "hits_detected": 1,
+    "parity_verified": true
+  },
+  {
+    "key_count": 100,
+    "pairs_equivalent": 4950,
+    "naive_pairwise_ms": 19.01,
+    "subquadratic_tree_ms": 16.28,
+    "speedup_factor": "1.17x",
+    "hits_detected": 1,
+    "parity_verified": true
+  },
+  {
+    "key_count": 200,
+    "pairs_equivalent": 19900,
+    "naive_pairwise_ms": 91.85,
+    "subquadratic_tree_ms": 50.79,
+    "speedup_factor": "1.81x",
+    "hits_detected": 1,
+    "parity_verified": true
+  },
+  {
+    "key_count": 400,
+    "pairs_equivalent": 79800,
+    "naive_pairwise_ms": 263.97,
+    "subquadratic_tree_ms": 146.34,
+    "speedup_factor": "1.80x",
+    "hits_detected": 1,
+    "parity_verified": true
+  },
+  {
+    "key_count": 1000,
+    "pairs_equivalent": 499500,
+    "naive_pairwise_ms": 1246.17,
+    "subquadratic_tree_ms": 645.79,
+    "speedup_factor": "1.93x",
+    "hits_detected": 1,
+    "parity_verified": true
+  }
+]

@@ -1,0 +1,188 @@
+{
+  "suite": "RSA-SHIELD educational fixture evaluation",
+  "disclaimer": "This suite validates probe behaviour on controlled fixtures. It is not an Internet-scale measurement study and does not prove key security.",
+  "ecm_timeout_ms_baseline": 2500,
+  "total": 7,
+  "hint_matches": 7,
+  "rows": [
+    {
+      "fixture_id": "weak-ecm",
+      "name": "Intentionally weak RSA (ECM demo)",
+      "expected_hint": "FACTOR_FOUND",
+      "final_state": "FACTOR_FOUND",
+      "factor_found": true,
+      "factor_method": "ECM",
+      "elapsed_ms": 36.51,
+      "match_hint": true,
+      "probes": {
+        "fermat": {
+          "factor_found": false,
+          "steps": 25000,
+          "message": "Fermat: no factor within 25000 steps (primes not near-twins under bound)."
+        },
+        "wiener": {
+          "factor_found": false,
+          "convergents_tried": 13,
+          "message": "Wiener: no small-d recovery in 13 convergents (attack targets d < ~N^(1/4)/3 \u2248 2515)."
+        },
+        "roca": {
+          "fingerprint_positive": false,
+          "score": 0.8666666666666667,
+          "detail": "gcd(n-1,M)=6; orbit_hits=13/15 (0.87)",
+          "message": "ROCA fingerprint: no strong Infineon-structure match under educational heuristic. Not a proof of ROCA-immunity."
+        }
+      },
+      "notes": "Never interpret INCONCLUSIVE as SECURE."
+    },
+    {
+      "fixture_id": "small-factor",
+      "name": "Small-factor demonstration key",
+      "expected_hint": "FACTOR_FOUND",
+      "final_state": "FACTOR_FOUND",
+      "factor_found": true,
+      "factor_method": "TINY_FACTOR",
+      "elapsed_ms": 0.16,
+      "match_hint": true,
+      "probes": {
+        "fermat": null,
+        "wiener": null,
+        "roca": {
+          "fingerprint_positive": false,
+          "score": 0.7333333333333333,
+          "detail": "gcd(n-1,M)=390; orbit_hits=11/15 (0.73)",
+          "message": "ROCA fingerprint: no strong Infineon-structure match under educational heuristic. Not a proof of ROCA-immunity."
+        }
+      },
+      "notes": "Never interpret INCONCLUSIVE as SECURE."
+    },
+    {
+      "fixture_id": "fermat-close",
+      "name": "Fermat near-twin primes demo",
+      "expected_hint": "FACTOR_FOUND (FERMAT)",
+      "final_state": "FACTOR_FOUND",
+      "factor_found": true,
+      "factor_method": "FERMAT",
+      "elapsed_ms": 0.13,
+      "match_hint": true,
+      "probes": {
+        "fermat": {
+          "factor_found": true,
+          "steps": 1,
+          "message": "Fermat factor found in 1 steps (|p\u2212q| small)."
+        },
+        "wiener": null,
+        "roca": {
+          "fingerprint_positive": false,
+          "score": 0.6666666666666666,
+          "detail": "gcd(n-1,M)=42; orbit_hits=10/15 (0.67)",
+          "message": "ROCA fingerprint: no strong Infineon-structure match under educational heuristic. Not a proof of ROCA-immunity."
+        }
+      },
+      "notes": "Never interpret INCONCLUSIVE as SECURE."
+    },
+    {
+      "fixture_id": "wiener-small-d",
+      "name": "Wiener small private exponent demo",
+      "expected_hint": "FACTOR_FOUND (WIENER)",
+      "final_state": "FACTOR_FOUND",
+      "factor_found": true,
+      "factor_method": "WIENER",
+      "elapsed_ms": 9.48,
+      "match_hint": true,
+      "probes": {
+        "fermat": {
+          "factor_found": false,
+          "steps": 25000,
+          "message": "Fermat: no factor within 25000 steps (primes not near-twins under bound)."
+        },
+        "wiener": {
+          "factor_found": true,
+          "convergents_tried": 26,
+          "message": "Wiener: recovered d\u224845-bit private exponent; factors extracted."
+        },
+        "roca": {
+          "fingerprint_positive": false,
+          "score": 0.9333333333333333,
+          "detail": "gcd(n-1,M)=22; orbit_hits=14/15 (0.93)",
+          "message": "ROCA fingerprint: no strong Infineon-structure match under educational heuristic. Not a proof of ROCA-immunity."
+        }
+      },
+      "notes": "Never interpret INCONCLUSIVE as SECURE."
+    },
+    {
+      "fixture_id": "normal-demo",
+      "name": "Normal demonstration RSA key",
+      "expected_hint": "SUSPICIOUS or INCONCLUSIVE",
+      "final_state": "SUSPICIOUS",
+      "factor_found": false,
+      "factor_method": null,
+      "elapsed_ms": 2508.7,
+      "match_hint": true,
+      "probes": {
+        "fermat": {
+          "factor_found": false,
+          "steps": 25000,
+          "message": "Fermat: no factor within 25000 steps (primes not near-twins under bound)."
+        },
+        "wiener": {
+          "factor_found": false,
+          "convergents_tried": 13,
+          "message": "Wiener: no small-d recovery in 13 convergents (attack targets d < ~N^(1/4)/3 \u2248 1189129998)."
+        },
+        "roca": {
+          "fingerprint_positive": false,
+          "score": 0.7333333333333333,
+          "detail": "gcd(n-1,M)=14; orbit_hits=11/15 (0.73)",
+          "message": "ROCA fingerprint: no strong Infineon-structure match under educational heuristic. Not a proof of ROCA-immunity."
+        }
+      },
+      "notes": "Never interpret INCONCLUSIVE as SECURE."
+    },
+    {
+      "fixture_id": "legacy-1024",
+      "name": "Legacy-size RSA-1024 public key",
+      "expected_hint": "SUSPICIOUS or INCONCLUSIVE",
+      "final_state": "SUSPICIOUS",
+      "factor_found": false,
+      "factor_method": null,
+      "elapsed_ms": 8050.87,
+      "match_hint": true,
+      "probes": {
+        "fermat": {
+          "factor_found": false,
+          "steps": 25000,
+          "message": "Fermat: no factor within 25000 steps (primes not near-twins under bound)."
+        },
+        "wiener": {
+          "factor_found": false,
+          "convergents_tried": 13,
+          "message": "Wiener: no small-d recovery in 13 convergents (attack targets d < ~N^(1/4)/3 \u2248 37108345868011673563593431210618335777228715534587203681132187832370084920767)."
+        },
+        "roca": {
+          "fingerprint_positive": true,
+          "score": 0.7333333333333333,
+          "detail": "gcd(n-1,M)=2; orbit_hits=11/15 (0.73)",
+          "message": "ROCA fingerprint SUSPICIOUS \u2014 modulus matches Infineon-like structure heuristics. Re-verify with crocs-muni/roca or badkeys before operational action. Fingerprint \u2260 completed Coppersmith factorization."
+        }
+      },
+      "notes": "Never interpret INCONCLUSIVE as SECURE."
+    },
+    {
+      "fixture_id": "invalid-pem",
+      "name": "Malformed PEM",
+      "expected_hint": "INVALID_KEY",
+      "final_state": "INVALID_KEY",
+      "factor_found": false,
+      "factor_method": null,
+      "elapsed_ms": 0,
+      "match_hint": true,
+      "notes": "Malformed PEM rejected at parse layer (not run through full pipeline)."
+    }
+  ],
+  "related_work_gap": [
+    "badkeys / crocs-muni/roca: broader production fingerprint coverage",
+    "RsaCtfTool: larger attack toolbox for CTF contexts",
+    "Heninger et al. batch-GCD: Internet-scale shared-factor discovery",
+    "RSA-SHIELD focus: evidence-tiered platform + budgeted probes + pedagogy"
+  ]
+}
