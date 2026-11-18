@@ -54,7 +54,7 @@ export function DemoPage() {
     try {
       const audit = await api.runFixture(id, id === "normal-demo" ? 3000 : 12000);
       setLast(audit);
-      setDone((d) => ({ ...d, [id]: audit.final_state }));
+      setDone((d) => ({ ...d, [id]: audit.final_state ?? "UNKNOWN" }));
       nav(`/app/audits/${audit.audit_id}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
