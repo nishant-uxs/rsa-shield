@@ -55,3 +55,9 @@ paper/*.out
 paper/*.bbl
 paper/*.blg
 .vercel
+
+# Keep paper/presentation local-only (not on GitHub)
+paper/
+presentation/
+frontend/public/deck/
+
